@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongGame", "PongGame.csproj", "{A587457D-059E-43F3-BE28-7074A50F860F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongGame", "PongGame\PongGame.csproj", "{A587457D-059E-43F3-BE28-7074A50F860F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "..\WebServer\WebServer.csproj", "{37224BE6-E9CC-4A72-972E-70E26D97FAC2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServer", "WebServer\WebServer.csproj", "{37224BE6-E9CC-4A72-972E-70E26D97FAC2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
