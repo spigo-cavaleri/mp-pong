@@ -8,7 +8,12 @@ namespace PongGame
         public Vector2 Position;
         public Texture2D Sprite;
 
-        
+       
+        public GameObject()
+        {
+
+
+        }
        
         public GameObject(Texture2D sprite, Vector2 position)
         {

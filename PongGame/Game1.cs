@@ -11,7 +11,32 @@ namespace PongGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         public Ball ball;
+        public Pad Pad1;
+        public Pad Pad2;
+        public Wall wallH ;
+        public Wall wallV;
+        public Wall wallO;
+        public Wall wallN;
+
+
+
         public  Texture2D Ball;
+        public Texture2D padTextur;
+
+        private static Game1 instance;
+        public static Game1 Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Game1();
+                }
+                return instance;
+            }
+        }
+
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +64,17 @@ namespace PongGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-             ball = new Ball(Ball = Content.Load<Texture2D>("pokeBall"), new Vector2(200,200));
+             ball = new Ball(Content.Load<Texture2D>("pokeBall"), new Vector2(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2));
+             Pad1 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width / 12, GraphicsDevice.Viewport.Height / 2),"pad1");
+             Pad2 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width /1.1f, GraphicsDevice.Viewport.Height / 2),"pad2");
+
+             wallH = new Wall(Content.Load<Texture2D>("nada"), new Vector2(GraphicsDevice.Viewport.Width ,0 ), 1, GraphicsDevice.Viewport.Height,"WallRight");//right
+             wallV = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0, 0), 1, GraphicsDevice.Viewport.Height, "WallLeft");//left
+
+
+            wallO = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,0), GraphicsDevice.Viewport.Width, 1,"WallNed");//button
+            wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -64,6 +99,8 @@ namespace PongGame
 
             // TODO: Add your update logic here
             ball.Update(gameTime);
+            Pad1.Update(gameTime);
+            Pad2.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -77,7 +114,12 @@ namespace PongGame
             spriteBatch.Begin();
 
             ball.Draw(spriteBatch);
-            
+            Pad1.Draw(spriteBatch);
+            Pad2.Draw(spriteBatch);
+            wallH.Draw(spriteBatch);
+            wallV.Draw(spriteBatch);
+            wallO.Draw(spriteBatch);
+            wallN.Draw(spriteBatch);
             spriteBatch.End();
             // TODO: Add your drawing code here
 
