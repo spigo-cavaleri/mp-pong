@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
 namespace PongGame
 {
     /// <summary>
@@ -11,7 +10,8 @@ namespace PongGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-
+        public Ball ball;
+        public  Texture2D Ball;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +39,7 @@ namespace PongGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+             ball = new Ball(Ball = Content.Load<Texture2D>("pokeBall"), new Vector2(200,200));
             // TODO: use this.Content to load your game content here
         }
 
@@ -63,7 +63,7 @@ namespace PongGame
                 Exit();
 
             // TODO: Add your update logic here
-
+            ball.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -74,7 +74,11 @@ namespace PongGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            spriteBatch.Begin();
 
+            ball.Draw(spriteBatch);
+            
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
