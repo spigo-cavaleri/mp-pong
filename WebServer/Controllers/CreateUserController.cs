@@ -28,6 +28,8 @@ namespace WebServer.Controllers
         public string Post([FromBody]string value)
         {
             bool wasCreated = false;
+            LoginResponseMessage loginResponseMessage;
+            string loginResponse;
 
             if (value == null)
             {
@@ -36,19 +38,14 @@ namespace WebServer.Controllers
 
             try
             {
-                MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(value));
-
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
-
-                UserInformationMessage msg = (UserInformationMessage)serializer.ReadObject(ms);
-
-                wasCreated = TextDatabaseManager.SaveUserInTextFile(msg.ToString());
-
-                if(wasCreated)
+                using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(value)))
                 {
-                    return "ja";
-                }
-                return "nej";
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
+
+                    UserInformationMessage msg = (UserInformationMessage)serializer.ReadObject(ms);
+
+                    wasCreated = TextDatabaseManager.SaveUserInTextFile(msg.ToString());
+                }                
             }
             catch (Exception e)
             {
@@ -56,7 +53,28 @@ namespace WebServer.Controllers
                 throw e; // Håndter errors anderledes ;)
             }
 
-            return "nej";
+            if (wasCreated)
+            {
+                loginResponseMessage = new LoginResponseMessage(true, true);
+            }
+            else
+            {
+                loginResponseMessage = new LoginResponseMessage(false);
+            }
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+
+                serializer.WriteObject(ms, loginResponseMessage);
+
+                ms.Position = 0;
+                StreamReader sr = new StreamReader(ms);
+
+                loginResponse = sr.ReadToEnd();
+            }
+
+            return loginResponse;
         }
     }
 }

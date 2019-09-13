@@ -28,6 +28,8 @@ namespace WebServer.Controllers
         public string Post([FromBody]string value)
         {
             bool exists = false;
+            LoginResponseMessage loginResponseMessage;
+            string loginResponse;
 
             if (value == null)
             {
@@ -44,11 +46,6 @@ namespace WebServer.Controllers
 
                 exists = TextDatabaseManager.UserExistsInTextFile(msg.ToString());
 
-                if (exists)
-                {
-                    return "ja";
-                }
-                return "nej";
             }
             catch (Exception e)
             {
@@ -56,7 +53,28 @@ namespace WebServer.Controllers
                 throw e; // Håndter errors anderledes ;)
             }
 
-            return "nej";
+            if (exists)
+            {
+                loginResponseMessage = new LoginResponseMessage(true, true);
+            }
+            else
+            {
+                loginResponseMessage = new LoginResponseMessage(false);
+            }
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+
+                serializer.WriteObject(ms, loginResponseMessage);
+
+                ms.Position = 0;
+                StreamReader sr = new StreamReader(ms);
+
+                loginResponse = sr.ReadToEnd();
+            }
+
+            return loginResponse;
         }
         
     }
