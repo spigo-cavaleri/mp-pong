@@ -19,26 +19,27 @@ namespace PongGame
 
         public void DoMagic()
         {
-            WebRequest request = WebRequest.Create("https://my-json-server.typicode.com/typicode/demo/comments");
-            request.Method = "POST";
 
-            string postData = "This is a test that posts this string to a server";
-            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+            //WebRequest request = WebRequest.Create("https://my-json-server.typicode.com/typicode/demo/comments");
+            //request.Method = "POST";
 
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.ContentLength = byteArray.Length;
+            //string postData = "This is a test that posts this string to a server";
+            //byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(byteArray, 0, byteArray.Length);
-            dataStream.Close();
+            //request.ContentType = "application/x-www-form-urlencoded";
+            //request.ContentLength = byteArray.Length;
 
-            WebResponse response = request.GetResponse();
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(byteArray, 0, byteArray.Length);
+            //dataStream.Close();
 
-            using (dataStream = response.GetResponseStream())
-            {
-                StreamReader reader = new StreamReader(dataStream);
-                string responseFromServer = reader.ReadToEnd();
-            }
+            //WebResponse response = request.GetResponse();
+
+            //using (dataStream = response.GetResponseStream())
+            //{
+            //    StreamReader reader = new StreamReader(dataStream);
+            //    string responseFromServer = reader.ReadToEnd();
+            //}
         }
     }
 }
