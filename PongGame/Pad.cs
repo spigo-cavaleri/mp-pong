@@ -12,65 +12,44 @@ namespace PongGame
   public  class Pad : GameObject  
     {
 
-        Rectangle rectangle;
-   
+        Rectangle rectangle; 
         public float speed = 400;
-
-        public string Name;
-        
+        public string Name;      
 
         public Pad(Texture2D sprite, Vector2 position, string name): base(sprite, position)
         {
             Name = name;
             Sprite = sprite;
             Position = position;
-
             rectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
-
         }
-
-
         public override void Update(GameTime gameTime)
-        {
- 
-
-            
+        {            
             if (Keyboard.GetState().IsKeyDown(Keys.Up)&& Position.Y >0)
             {
                Position.Y -= (float)(speed * gameTime.ElapsedGameTime.TotalSeconds);
-
             }
-
             if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < 370)
             {
                Position.Y += (float)(speed * gameTime.ElapsedGameTime.TotalSeconds);
-
-            }
-           
-
+            }           
             base.Update(gameTime);
         }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (rectangle.Intersects(Ball.rectangle))
-            {
-
-                int sf = 33;
-
-                if (Ball.Velocity.X < 0 && Name =="pad1")
+            {             
+                if (Ball.Velocity.X < 0 && Name =="pad1") // Ball Hits Pad One
                 {
                     Ball.Velocity.X = System.Math.Abs(Ball.Velocity.X);
+                    Ball.Velocity *= 1.04f;
                 }
-                if (Ball.Velocity.X > 0 && Name == "pad2")
+                if (Ball.Velocity.X > 0 && Name == "pad2")// Ball Hits Pad Two
                 {
                     Ball.Velocity.X = -System.Math.Abs(Ball.Velocity.X);
+                    Ball.Velocity *= 1.04f;
                 }
-
-
-
             }
-
             rectangle.X = (int)Position.X;
             rectangle.Y = (int)Position.Y;
             Rectangle topLine = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);

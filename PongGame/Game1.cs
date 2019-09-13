@@ -10,18 +10,25 @@ namespace PongGame
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        SpriteFont Font;
+ 
+
+        public int Player1HP;
+        public int Player2HP;
+
         public Ball ball;
         public Pad Pad1;
         public Pad Pad2;
-        public Wall wallH ;
+        public Wall wallH;
         public Wall wallV;
         public Wall wallO;
         public Wall wallN;
-
-
-
         public  Texture2D Ball;
         public Texture2D padTextur;
+
+
+
+
 
         private static Game1 instance;
         public static Game1 Instance
@@ -71,10 +78,11 @@ namespace PongGame
              wallH = new Wall(Content.Load<Texture2D>("nada"), new Vector2(GraphicsDevice.Viewport.Width ,0 ), 1, GraphicsDevice.Viewport.Height,"WallRight");//right
              wallV = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0, 0), 1, GraphicsDevice.Viewport.Height, "WallLeft");//left
 
-
             wallO = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,0), GraphicsDevice.Viewport.Width, 1,"WallNed");//button
             wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top
 
+
+             Font = Content.Load<SpriteFont>("Text");
             // TODO: use this.Content to load your game content here
         }
 

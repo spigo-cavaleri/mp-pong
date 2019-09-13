@@ -49,3 +49,10 @@
 /processorParam:TextureFormat=Color
 /build:pokeBall.png
 
+#begin Text.spritefont
+/importer:FontDescriptionImporter
+/processor:LocalizedFontProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Text.spritefont
+

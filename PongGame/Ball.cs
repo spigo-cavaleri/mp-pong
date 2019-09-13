@@ -12,63 +12,80 @@ namespace PongGame
     {
 
       public static Rectangle rectangle;
-      public Vector2 Orgin;
+  
+      public Vector2 Direction;    
+      public static float speed =7;
+      public static Vector2 Velocity;
+      public static bool DeadLeft = false;
+      public static bool DeadRight = false;
 
-      public Random random;
-      public static Vector2 Direction;
-      static  public Vector2 Velocity;
-       
-      public static   float speed =4 ;
-
-
-        private static Ball instance;
-
-        public static Ball Instance
-        {
-            get
-            {
-                if( instance== null)
-                {
-                    instance = new Ball();
-                }
-                return instance;
-            }
-            
-        }
-        
-        public Ball()
-        {
-
-        }
- 
-
-      public  Ball(Texture2D sprite, Vector2 position):base(sprite,position)
-        {
-           
+        public  Ball(Texture2D sprite, Vector2 position):base(sprite,position)
+        {            
             rectangle = new Rectangle(0, 0, Sprite.Width, Sprite.Height);
-            Orgin = new Vector2(Sprite.Width, Sprite.Height);
-            Sprite = sprite;
-            random = new Random();
+            Sprite = sprite;          
             Position = position;
-            ////Position = new Vector2(random.Next(0, 720), random.Next(0, 400));
             SetRandomDirection();
-             Velocity = Direction * speed;
+            Velocity = Direction * speed; /// Balls Velocity
         }
 
         public void SetRandomDirection()
         {
-            random = new Random();
-            Direction = new Vector2((random.Next(0, 200)*2 - 200), (random.Next(0, 200) * 2 - 200)); //Set direction vector components to -1 or 1
+           
+           Random random = new Random();
+            if (random.Next(0, 100) >= 50)
+            {
+                Direction = new Vector2((random.Next(50, 200)), (random.Next(10, 100) * 2 - 100)); //random ´right
+            }
+            else
+            {
+                Direction = new Vector2((random.Next(0, 150) - 200), (random.Next(10, 100) * 2 - 100)); //random left
+            }
             Direction.Normalize(); //Normalizes vector so that it is only a unit vector
+        }
+        public void SetRandomDirectionRight() // sætte velecity random rightside
+        {
+            Random random = new Random();
+            Direction = new Vector2((random.Next(50, 200)), (random.Next(10, 100) * 2 - 100)); //random ´right
+            Direction.Normalize();
+            Velocity = Vector2.Zero;
+            Velocity = Direction * speed;
+        }
+        public void SetRandomDirectionleft() // sets direction of the ball random on the left side
+        {
 
+            Random random = new Random();
+            Direction = new Vector2((random.Next(0, 150) - 200), (random.Next(10, 100) * 2 - 100)); //random left
+            Direction.Normalize();
+            Velocity = Vector2.Zero;
+            Velocity = Direction * speed;
+        }
+
+        public void BallDead()
+        {
+
+            if (DeadLeft == true)
+            {
+                Position = new Vector2(360, 200);
+                SetRandomDirectionleft();
+                Velocity = Direction * speed;
+                DeadLeft = false;
+            }
+            if (DeadRight == true)
+            {
+                Position = new Vector2(360, 200);
+                SetRandomDirectionRight();
+                Velocity = Direction * speed;
+                DeadRight = false;
+            }
         }
         public override void Update(GameTime gameTime)
         {
-           
 
-            ////Position += new Vector2(1, 0) * speed;
-           Position += Velocity;
-            base.Update(gameTime);
+
+
+           BallDead();               
+           Position += Velocity;  
+           base.Update(gameTime);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
