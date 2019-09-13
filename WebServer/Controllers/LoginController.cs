@@ -15,13 +15,13 @@ namespace WebServer.Controllers
         // GET: api/Login
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            return new string[] { "Ingen GET requests er mulige" };
         }
 
         // GET: api/Login/5
         public string Get(int id)
         {
-            return "value";
+            return "Ingen GET requests er mulige";
         }
 
         // POST: api/Login
