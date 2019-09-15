@@ -11,10 +11,7 @@ namespace PongGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont Font;
- 
-
-        public int Player1HP;
-        public int Player2HP;
+        SpriteFont FontWin; 
 
         public Ball ball;
         public Pad Pad1;
@@ -26,9 +23,17 @@ namespace PongGame
         public  Texture2D Ball;
         public Texture2D padTextur;
 
+        public bool WonGame = false;
 
+        public string PlayerThatWon;
+        public string Player1name = "1";
+        public string Player2name = "2";
 
+        public int Player1HP = 10;
+        public int Player2HP = 10;
 
+        public static float screenHeight;
+        public static float screenWithe;
 
         private static Game1 instance;
         public static Game1 Instance
@@ -42,11 +47,18 @@ namespace PongGame
                 return instance;
             }
         }
-
+      
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+         graphics = new GraphicsDeviceManager(this);     
+         graphics.PreferredBackBufferWidth = 1280;  // set this value to the desired width of your window
+         graphics.PreferredBackBufferHeight = 720;   // set this value to the desired height of your window
+
+            screenWithe = graphics.PreferredBackBufferWidth;
+            screenHeight = graphics.PreferredBackBufferHeight;
+          graphics.ApplyChanges();
+        
             Content.RootDirectory = "Content";
         }
 
@@ -82,7 +94,8 @@ namespace PongGame
             wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top
 
 
-             Font = Content.Load<SpriteFont>("Text");
+             Font = Content.Load<SpriteFont>("Font");
+           
             // TODO: use this.Content to load your game content here
         }
 
@@ -128,6 +141,18 @@ namespace PongGame
             wallV.Draw(spriteBatch);
             wallO.Draw(spriteBatch);
             wallN.Draw(spriteBatch);
+
+            spriteBatch.DrawString(Font, $"Player1:{Player1HP}           Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
+            if(WonGame == true)
+            {
+                spriteBatch.DrawString(Font, $"Player {PlayerThatWon} Won The Game Press Enter to Play Again", new Vector2(450, 300), Color.Yellow);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter)) {
+                    Player1HP = 10;
+                    Player2HP = 10;
+                    WonGame = false;
+                }
+            }
             spriteBatch.End();
             // TODO: Add your drawing code here
 

@@ -65,14 +65,14 @@ namespace PongGame
 
             if (DeadLeft == true)
             {
-                Position = new Vector2(360, 200);
+                Position = new Vector2(640, 360);
                 SetRandomDirectionleft();
                 Velocity = Direction * speed;
                 DeadLeft = false;
             }
             if (DeadRight == true)
             {
-                Position = new Vector2(360, 200);
+                Position = new Vector2(640, 360);
                 SetRandomDirectionRight();
                 Velocity = Direction * speed;
                 DeadRight = false;
@@ -81,11 +81,18 @@ namespace PongGame
         public override void Update(GameTime gameTime)
         {
 
+            if (Game1.Instance.WonGame == false)
+            {
 
-
-           BallDead();               
-           Position += Velocity;  
+                BallDead();
+                Position += Velocity;
+            }
+            else
+            {
+                Position = new Vector2(Game1.screenWithe / 2, Game1.screenHeight / 2);
+            }
            base.Update(gameTime);
+
         }
         public override void Draw(SpriteBatch spriteBatch)
         {

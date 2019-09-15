@@ -34,10 +34,23 @@ namespace PongGame
                 if (Ball.Velocity.X > 0 && Name == "WallRight")//Ball Hits rightwall
                 {
                     Ball.DeadRight = true;
+                    Game1.Instance.Player2HP -= 1;
+                    if(Game1.Instance.Player2HP < 9)
+                    {
+                        Game1.Instance.WonGame = true;
+                        Game1.Instance.PlayerThatWon = Game1.Instance.Player1name;
+
+                    }
                 }
                 if (Ball.Velocity.X < 0 && Name == "WallLeft")//Ball Hits LeftWall
                 {
+                    Game1.Instance.Player1HP -= 1;
                     Ball.DeadLeft = true;
+                    if (Game1.Instance.Player1HP < 9)
+                    {
+                        Game1.Instance.WonGame = true;
+                        Game1.Instance.PlayerThatWon = Game1.Instance.Player2name;
+                    }
                 }
                 if (Ball.Velocity.Y < 0 && Name == "WallNed")
                 {

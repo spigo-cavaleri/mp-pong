@@ -29,7 +29,7 @@ namespace PongGame
             {
                Position.Y -= (float)(speed * gameTime.ElapsedGameTime.TotalSeconds);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < 370)
+            if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < 620)
             {
                Position.Y += (float)(speed * gameTime.ElapsedGameTime.TotalSeconds);
             }           
