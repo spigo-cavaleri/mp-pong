@@ -23,7 +23,12 @@ namespace PongGame
             Position = position;
             rectangle = new Rectangle(0, 0, sprite.Width, sprite.Height);
         }
-        public override void Update(GameTime gameTime)
+
+        /// <summary>
+        /// /// movement af pads
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override void Update(GameTime gameTime) 
         {            
             if (Keyboard.GetState().IsKeyDown(Keys.Up)&& Position.Y >0)
             {
@@ -35,6 +40,10 @@ namespace PongGame
             }           
             base.Update(gameTime);
         }
+        /// <summary>
+        /// /// cheker om bolden retgale rammer pad1 eller pad2
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (rectangle.Intersects(Ball.rectangle))
@@ -50,6 +59,8 @@ namespace PongGame
                     Ball.Velocity *= 1.04f;
                 }
             }
+
+            // sætter retagle positon og teger debug
             rectangle.X = (int)Position.X;
             rectangle.Y = (int)Position.Y;
             Rectangle topLine = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);

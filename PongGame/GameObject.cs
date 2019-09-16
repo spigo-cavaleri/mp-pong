@@ -5,7 +5,7 @@ namespace PongGame
 {
     public abstract class GameObject
     {
-        public Vector2 Position;
+       static public Vector2 Position;
         public Texture2D Sprite;
 
        
