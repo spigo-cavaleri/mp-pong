@@ -54,12 +54,10 @@ namespace PongGame
          graphics = new GraphicsDeviceManager(this);     
          graphics.PreferredBackBufferWidth = 1280;  // set this value to the desired width of your window
          graphics.PreferredBackBufferHeight = 720;   // set this value to the desired height of your window
-
-            screenWithe = graphics.PreferredBackBufferWidth;
-            screenHeight = graphics.PreferredBackBufferHeight;
-          graphics.ApplyChanges();
-        
-            Content.RootDirectory = "Content";
+         screenWithe = graphics.PreferredBackBufferWidth;
+         screenHeight = graphics.PreferredBackBufferHeight;
+         graphics.ApplyChanges();   
+         Content.RootDirectory = "Content";
         }
 
         /// <summary>
@@ -83,12 +81,12 @@ namespace PongGame
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-             ball = new Ball(Content.Load<Texture2D>("pokeBall"), new Vector2(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2));
-             Pad1 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width / 12, GraphicsDevice.Viewport.Height / 2),"pad1");
-             Pad2 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width /1.1f, GraphicsDevice.Viewport.Height / 2),"pad2");
+            ball = new Ball(Content.Load<Texture2D>("pokeBall"), new Vector2(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2));
+            Pad1 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width / 12, GraphicsDevice.Viewport.Height / 2),"pad1");
+            Pad2 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width /1.1f, GraphicsDevice.Viewport.Height / 2),"pad2");
 
-             wallH = new Wall(Content.Load<Texture2D>("nada"), new Vector2(GraphicsDevice.Viewport.Width ,0 ), 1, GraphicsDevice.Viewport.Height,"WallRight");//right
-             wallV = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0, 0), 1, GraphicsDevice.Viewport.Height, "WallLeft");//left
+            wallH = new Wall(Content.Load<Texture2D>("nada"), new Vector2(GraphicsDevice.Viewport.Width ,0 ), 1, GraphicsDevice.Viewport.Height,"WallRight");//right
+            wallV = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0, 0), 1, GraphicsDevice.Viewport.Height, "WallLeft");//left
 
             wallO = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,0), GraphicsDevice.Viewport.Width, 1,"WallNed");//button
             wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top

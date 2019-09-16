@@ -11,10 +11,9 @@ namespace PongGame
   public  class Ball :GameObject
     {
 
-      public static Rectangle rectangle;
-  
-      public Vector2 Direction;    
-      public static float speed =7;
+      public static Rectangle rectangle; // rectangle
+      public Vector2 Direction; // Direction 
+      public static float speed =7; //fart
       public static Vector2 Velocity;
       public static bool DeadLeft = false;
       public static bool DeadRight = false;
@@ -27,7 +26,9 @@ namespace PongGame
             SetRandomDirection();
             Velocity = Direction * speed; /// Balls Velocity
         }
-
+        /// <summary>
+        /// Giver bolden en random direction mod hæjre eller venstre
+        /// </summary>
         public void SetRandomDirection()
         {
            
@@ -60,7 +61,7 @@ namespace PongGame
             Velocity = Direction * speed;
         }
 
-        public void BallDead()
+        public void BallDead() // Når bolden er ryger in på en af siderne sætter bolden til midten og ryger random mod en side som den ryg in mod
         {
 
             if (DeadLeft == true)
@@ -94,19 +95,19 @@ namespace PongGame
            base.Update(gameTime);
 
         }
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch) /// tagner debug regtagle 
         {
-            rectangle.X =(int)Position.X;
-            rectangle.Y = (int)Position.Y;
-            Rectangle topLine = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);
-            Rectangle bottomLine = new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width, 1);
-            Rectangle rightLine = new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, 1, rectangle.Height);
-            Rectangle leftLine = new Rectangle(rectangle.X, rectangle.Y, 1, rectangle.Height);
+            //rectangle.X =(int)Position.X;
+            //rectangle.Y = (int)Position.Y;
+            //Rectangle topLine = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);
+            //Rectangle bottomLine = new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width, 1);
+            //Rectangle rightLine = new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, 1, rectangle.Height);
+            //Rectangle leftLine = new Rectangle(rectangle.X, rectangle.Y, 1, rectangle.Height);
 
-            spriteBatch.Draw(Sprite, topLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
-            spriteBatch.Draw(Sprite, bottomLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
-            spriteBatch.Draw(Sprite, rightLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
-            spriteBatch.Draw(Sprite, leftLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            //spriteBatch.Draw(Sprite, topLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            //spriteBatch.Draw(Sprite, bottomLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            //spriteBatch.Draw(Sprite, rightLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
+            //spriteBatch.Draw(Sprite, leftLine, null, Color.Red, 0, Vector2.Zero, SpriteEffects.None, 1);
             base.Draw(spriteBatch);
         }
 
