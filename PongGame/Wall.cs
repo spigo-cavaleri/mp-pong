@@ -27,6 +27,10 @@ namespace PongGame
         {
             base.Update(gameTime);  
         }
+        /// <summary>
+        /// Chekker hvilken væk side bolden rammer på 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (rectangle.Intersects(Ball.rectangle))

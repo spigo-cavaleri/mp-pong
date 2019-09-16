@@ -18,6 +18,11 @@ namespace PongGame
       public static bool DeadLeft = false;
       public static bool DeadRight = false;
 
+
+        public static Vector2 BallPosition;
+
+
+
         public  Ball(Texture2D sprite, Vector2 position):base(sprite,position)
         {            
             rectangle = new Rectangle(0, 0, Sprite.Width, Sprite.Height);
@@ -92,6 +97,8 @@ namespace PongGame
             {
                 Position = new Vector2(Game1.screenWithe / 2, Game1.screenHeight / 2);
             }
+
+            BallPosition = Position;
            base.Update(gameTime);
 
         }
