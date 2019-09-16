@@ -1,6 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Json;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 namespace PongGame
 {
     /// <summary>
@@ -11,7 +16,7 @@ namespace PongGame
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteFont Font;
-        SpriteFont FontWin; 
+ 
 
         public Ball ball;
         public Pad Pad1;
@@ -34,6 +39,9 @@ namespace PongGame
 
         public static float screenHeight;
         public static float screenWithe;
+
+
+     public   DataTosSend dataBall = new DataTosSend();
 
         private static Game1 instance;
         public static Game1 Instance
@@ -91,8 +99,8 @@ namespace PongGame
             wallO = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,0), GraphicsDevice.Viewport.Width, 1,"WallNed");//button
             wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top
 
-
-             Font = Content.Load<SpriteFont>("Font");
+          
+            Font = Content.Load<SpriteFont>("Font");
            
             // TODO: use this.Content to load your game content here
         }
@@ -105,7 +113,6 @@ namespace PongGame
         {
             // TODO: Unload any non ContentManager content here
         }
-
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -115,6 +122,12 @@ namespace PongGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            dataBall.JsonWhriteData();
+            dataBall.readData();
+
+            dataBall.BallX = (int)ball.Position.X;
+            dataBall.BallY = (int)ball.Position.Y;
 
             // TODO: Add your update logic here
             ball.Update(gameTime);
@@ -140,7 +153,7 @@ namespace PongGame
             wallO.Draw(spriteBatch);
             wallN.Draw(spriteBatch);
 
-            spriteBatch.DrawString(Font, $"Player1:{Player1HP}           Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
+            spriteBatch.DrawString(Font, $"Player1:{Player1HP}    {dataBall.Newdata.BallX}       Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
             if(WonGame == true)
             {
                 spriteBatch.DrawString(Font, $"Player {PlayerThatWon} Won The Game Press Enter to Play Again", new Vector2(450, 300), Color.Yellow);
