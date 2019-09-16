@@ -97,8 +97,8 @@ namespace PongGame
         }
         public override void Draw(SpriteBatch spriteBatch) /// tagner debug regtagle 
         {
-            //rectangle.X =(int)Position.X;
-            //rectangle.Y = (int)Position.Y;
+            rectangle.X = (int)Position.X;
+            rectangle.Y = (int)Position.Y;
             //Rectangle topLine = new Rectangle(rectangle.X, rectangle.Y, rectangle.Width, 1);
             //Rectangle bottomLine = new Rectangle(rectangle.X, rectangle.Y + rectangle.Height, rectangle.Width, 1);
             //Rectangle rightLine = new Rectangle(rectangle.X + rectangle.Width, rectangle.Y, 1, rectangle.Height);
