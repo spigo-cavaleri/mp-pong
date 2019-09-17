@@ -55,12 +55,24 @@ namespace WebServer.Controllers
 
             if (wasCreated)
             {
-                loginResponseMessage = new LoginResponseMessage(true, true);
+                SavedServerObject gameServer = FindAvailableGameServer();
+
+                if (gameServer == default(SavedServerObject))
+                {
+                    loginResponseMessage = new LoginResponseMessage(true, true);
+                }
+                else
+                {
+                    gameServer.PlayerCount += 1;
+                    loginResponseMessage = new LoginResponseMessage(true, false, gameServer.IP, gameServer.Port);
+                }
+
             }
             else
             {
                 loginResponseMessage = new LoginResponseMessage(false);
             }
+
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -75,6 +87,11 @@ namespace WebServer.Controllers
             }
 
             return loginResponse;
+        }
+
+        private SavedServerObject FindAvailableGameServer()
+        {
+            return InMemoryDatabase.SavedServerObjects.Find(item => !item.GameFull);
         }
     }
 }
