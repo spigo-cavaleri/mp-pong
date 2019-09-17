@@ -22,6 +22,12 @@ namespace WebServer
             set { this.password = value; }
         }
 
+        public UserInformationMessage(string username, string password)
+        {
+            this.username = username;
+            this.password = password;
+        }
+
         [DataMember] private string username;
         [DataMember] private string password;
 
