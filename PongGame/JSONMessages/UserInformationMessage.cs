@@ -5,7 +5,7 @@ using System.Web;
 using System.Runtime.Serialization;
 
 
-namespace WebServer
+namespace PongGame
 {
     [DataContract] public struct UserInformationMessage
     {
@@ -20,12 +20,6 @@ namespace WebServer
         {
             get => this.password;
             set { this.password = value; }
-        }
-
-        public UserInformationMessage(string username, string password)
-        {
-            this.username = username;
-            this.password = password;
         }
 
         [DataMember] private string username;
