@@ -42,10 +42,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Ball.cs" />
+    <Compile Include="Button.cs" />
     <Compile Include="DataTosSend.cs" />
     <Compile Include="Data\TcpDataPacket.cs" />
-	<Compile Include="Game1.cs" />
+    <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
+    <Compile Include="InputField.cs" />
     <Compile Include="Pad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
