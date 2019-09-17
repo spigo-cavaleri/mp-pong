@@ -1,6 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using PongGame.GamePong;
+
 namespace PongGame
 {
     /// <summary>
@@ -8,34 +11,7 @@ namespace PongGame
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        SpriteFont Font;
-        SpriteFont FontWin; 
-
-        public Ball ball;
-        public Pad Pad1;
-        public Pad Pad2;
-        public Wall wallH;
-        public Wall wallV;
-        public Wall wallO;
-        public Wall wallN;
-        public  Texture2D Ball;
-        public Texture2D padTextur;
-
-        public bool WonGame = false;
-
-        public string PlayerThatWon;
-        public string Player1name = "1";
-        public string Player2name = "2";
-
-        public int Player1HP = 10;
-        public int Player2HP = 10;
-
-        public static float screenHeight;
-        public static float screenWithe;
-
-        private static Game1 instance;
+        #region SINGLETON
         public static Game1 Instance
         {
             get
@@ -44,20 +20,34 @@ namespace PongGame
                 {
                     instance = new Game1();
                 }
+
                 return instance;
             }
         }
-      
+
+        private static Game1 instance;
+        #endregion
+
+        public GraphicsDeviceManager GraphicsDeviceManager;
+
+        public SpriteBatch SpriteBatch
+        {
+            get;
+        }
+
+        private Map pongMap;
 
         public Game1()
         {
-         graphics = new GraphicsDeviceManager(this);     
-         graphics.PreferredBackBufferWidth = 1280;  // set this value to the desired width of your window
-         graphics.PreferredBackBufferHeight = 720;   // set this value to the desired height of your window
-         screenWithe = graphics.PreferredBackBufferWidth;
-         screenHeight = graphics.PreferredBackBufferHeight;
-         graphics.ApplyChanges();   
-         Content.RootDirectory = "Content";
+            GraphicsDeviceManager = new GraphicsDeviceManager(this);
+
+            GraphicsDeviceManager.PreferredBackBufferWidth = 1024;  // set this value to the desired width of your window
+            GraphicsDeviceManager.PreferredBackBufferHeight = 720;   // set this value to the desired height of your window
+            GraphicsDeviceManager.ApplyChanges();
+
+            Content.RootDirectory = "Content";
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         /// <summary>
@@ -69,6 +59,7 @@ namespace PongGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            pongMap = Map.Instance;
 
             base.Initialize();
         }
@@ -79,22 +70,7 @@ namespace PongGame
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            ball = new Ball(Content.Load<Texture2D>("pokeBall"), new Vector2(GraphicsDevice.Viewport.Width/2,GraphicsDevice.Viewport.Height/2));
-            Pad1 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width / 12, GraphicsDevice.Viewport.Height / 2),"pad1");
-            Pad2 = new Pad(Content.Load<Texture2D>("pipe"), new Vector2(GraphicsDevice.Viewport.Width /1.1f, GraphicsDevice.Viewport.Height / 2),"pad2");
-
-            wallH = new Wall(Content.Load<Texture2D>("nada"), new Vector2(GraphicsDevice.Viewport.Width ,0 ), 1, GraphicsDevice.Viewport.Height,"WallRight");//right
-            wallV = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0, 0), 1, GraphicsDevice.Viewport.Height, "WallLeft");//left
-
-            wallO = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,0), GraphicsDevice.Viewport.Width, 1,"WallNed");//button
-            wallN = new Wall(Content.Load<Texture2D>("nada"), new Vector2(0,GraphicsDevice.Viewport.Height), GraphicsDevice.Viewport.Width,1, "WallUp");//top
-
-
-             Font = Content.Load<SpriteFont>("Font");
-           
-            // TODO: use this.Content to load your game content here
+            pongMap.LoadContent();
         }
 
         /// <summary>
@@ -103,7 +79,7 @@ namespace PongGame
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
         /// <summary>
@@ -115,11 +91,9 @@ namespace PongGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            pongMap.Update(gameTime);
 
             // TODO: Add your update logic here
-            ball.Update(gameTime);
-            Pad1.Update(gameTime);
-            Pad2.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -130,32 +104,15 @@ namespace PongGame
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            spriteBatch.Begin();
+            SpriteBatch.Begin();
 
-            ball.Draw(spriteBatch);
-            Pad1.Draw(spriteBatch);
-            Pad2.Draw(spriteBatch);
-            wallH.Draw(spriteBatch);
-            wallV.Draw(spriteBatch);
-            wallO.Draw(spriteBatch);
-            wallN.Draw(spriteBatch);
+            pongMap.Draw(SpriteBatch);
 
-            spriteBatch.DrawString(Font, $"Player1:{Player1HP}           Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
-            if(WonGame == true)
-            {
-                spriteBatch.DrawString(Font, $"Player {PlayerThatWon} Won The Game Press Enter to Play Again", new Vector2(450, 300), Color.Yellow);
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter)) {
-                    Player1HP = 10;
-                    Player2HP = 10;
-                    WonGame = false;
-                }
-            }
-            spriteBatch.End();
+            SpriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
-       
+
     }
 }

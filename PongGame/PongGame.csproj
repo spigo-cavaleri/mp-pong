@@ -41,18 +41,20 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Ball.cs" />
+    <Compile Include="GamePong\Ball.cs" />
     <Compile Include="DataTosSend.cs" />
     <Compile Include="Data\TcpDataPacket.cs" />
-	<Compile Include="Game1.cs" />
-    <Compile Include="GameObject.cs" />
-    <Compile Include="Pad.cs" />
+    <Compile Include="Game1.cs" />
+    <Compile Include="GamePong\CollisionManager.cs" />
+    <Compile Include="GamePong\GameObject.cs" />
+    <Compile Include="GamePong\Map.cs" />
+    <Compile Include="GamePong\Pad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tcp\GameClient.cs" />
     <Compile Include="Tcp\GameServer.cs" />
     <Compile Include="Tcp\WanUtils.cs" />
-    <Compile Include="Wall.cs" />
+    <Compile Include="GamePong\Wall.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">
