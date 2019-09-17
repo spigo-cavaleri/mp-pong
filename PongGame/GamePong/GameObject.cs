@@ -3,8 +3,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PongGame.GamePong
 {
+    /// <summary>
+    /// The base class for all game objects in the game
+    /// </summary>
     public abstract class GameObject
     {
+        #region PUBLIC PROPERTIES
         /// <summary>
         /// Returns the height of the game object
         /// </summary>
@@ -20,11 +24,6 @@ namespace PongGame.GamePong
         {
             get { return GetWidth(); }
         }
-
-        /// <summary>
-        /// The position of the game object
-        /// </summary>
-        public Vector2 Position;
 
         /// <summary>
         /// The sprite of the game object
@@ -45,9 +44,18 @@ namespace PongGame.GamePong
                 return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
             }
         }
+        #endregion
 
+        #region PUBLIC FIELDS
         /// <summary>
-        /// Constrructs a 
+        /// The position of the game object
+        /// </summary>
+        public Vector2 Position;
+        #endregion
+
+        #region CONSTRUCTERS
+        /// <summary>
+        /// Constructs a gameobject
         /// </summary>
         public GameObject() : this(null, new Vector2()) { }
        
@@ -61,7 +69,14 @@ namespace PongGame.GamePong
             Position = position;
             Sprite = sprite;
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
+        /// <summary>
+        /// Constrols if one game object is colliding with another
+        /// </summary>
+        /// <param name="colliderGameObject">The game object to check against</param>
+        /// <returns>True if the gameobjects collides, false otherwise</returns>
         public bool IsColliding(GameObject colliderGameObject)
         {
             if (colliderGameObject == null)
@@ -69,7 +84,7 @@ namespace PongGame.GamePong
                 return false;
             }
 
-            if (colliderGameObject.HitBox.Intersects(HitBox))
+            if (HitBox.Intersects(colliderGameObject.HitBox))
             {
                 return true;
             }
@@ -99,7 +114,9 @@ namespace PongGame.GamePong
                 spriteBatch.Draw(Sprite, HitBox, Color.White);
             }
         }
+        #endregion
 
+        #region PROTECTED FUNCTIONS
         /// <summary>
         /// The height of the game object
         /// </summary>
@@ -127,5 +144,6 @@ namespace PongGame.GamePong
 
             return 0;
         }
+        #endregion
     }
 }

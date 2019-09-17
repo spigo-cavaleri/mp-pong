@@ -7,12 +7,25 @@ namespace PongGame.GamePong
 {
     public class CollisionManager
     {
+        #region CONST VALUES
+        /// <summary>
+        /// Invert
+        /// </summary>
         public const int INVERT = -1;
+        #endregion
 
+        #region EVENTS
+        /// <summary>
+        /// Event for when players has scored
+        /// </summary>
         public event ScoreHandle HasScored;
         public delegate void ScoreHandle(int scoreSubstraction, string player);
+        #endregion
 
         #region SINGLETON
+        /// <summary>
+        /// The instance of the collision manager
+        /// </summary>
         public static CollisionManager Instance
         {
             get
@@ -29,48 +42,61 @@ namespace PongGame.GamePong
         private static CollisionManager instance;
         #endregion
 
+        #region PRIVATE FIELDS
         private Map map;
         private List<GameObject> gameObjects;
+        #endregion
 
+        #region CONSTRUCTERS
+        /// <summary>
+        /// Constructs a collision manager
+        /// </summary>
         public CollisionManager()
         {
             map = Map.Instance;
             gameObjects = map.GameObjects;
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
+        /// <summary>
+        /// Updates the game
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             Collision();
         }
+        #endregion
 
+        #region PRIVATE FUNCTIONS
         private void Collision()
         {
             GameObject[] colliderObjects = gameObjects.ToArray();
 
             for (int i = 0; i < gameObjects.Count; i++)
             {
-                if (!(gameObjects[i] is Ball))
-                {
-                    continue;
-                }
-
                 for (int j = 0; j < colliderObjects.Length; j++)
                 {
-                    if (colliderObjects[i] is Wall)
+                    if (colliderObjects[j] is Wall && gameObjects[i] is Ball)
                     {
-                        BallCollideWithWall(gameObjects[i] as Ball, colliderObjects[i] as Wall);
+                        BallCollideWithWall(gameObjects[i] as Ball, colliderObjects[j] as Wall);
                     }
-                    else if (gameObjects[i] is Pad)
+
+                    if (colliderObjects[j] is Pad && gameObjects[i] is Ball)
                     {
-                        BallCollideWithPad(colliderObjects[i] as Ball);
+                        BallCollideWithPad(gameObjects[i] as Ball, colliderObjects[j] as Pad);
                     }
                 }
             }
         }
 
-        private void BallCollideWithPad(Ball ball)
+        private void BallCollideWithPad(Ball ball, Pad pad)
         {
-            ball.Direction.X *= INVERT;
+            if (ball.IsColliding(pad))
+            {
+                ball.Direction.X *= INVERT;
+            }
         }
 
         private void BallCollideWithWall(Ball ball, Wall wall)
@@ -124,5 +150,6 @@ namespace PongGame.GamePong
 
             ball.Reset(ScoreSide.Right);
         }
+        #endregion
     }
 }

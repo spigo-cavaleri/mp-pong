@@ -5,6 +5,7 @@ namespace PongGame.GamePong
 {
     public class Wall : GameObject
     {
+        #region PUBLIC PROPERTIES
         public string Name
         {
             get;
@@ -16,10 +17,14 @@ namespace PongGame.GamePong
             get;
             set;
         } = null;
+        #endregion
 
+        #region PRIVATE FIELDS
         private int height = 0;
         private int width = 0;
-        
+        #endregion
+
+        #region CONSTRUCTERS
         /// <summary>
         /// Constructs a wall
         /// </summary>
@@ -30,7 +35,9 @@ namespace PongGame.GamePong
         {
             Name = name;
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
         /// <summary>
         /// Sets the height of the wall
         /// </summary>
@@ -59,7 +66,9 @@ namespace PongGame.GamePong
         {
             base.Draw(spriteBatch);
         }
+        #endregion
 
+        #region PROTECTED FUNCTIONS
         protected override int GetHeight()
         {
             if (Sprite != null)
@@ -79,5 +88,6 @@ namespace PongGame.GamePong
 
             return width;
         }
+        #endregion
     }
 }

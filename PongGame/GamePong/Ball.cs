@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace PongGame.GamePong
 {
+    /// <summary>
+    /// The score side to choose ball direction after reset
+    /// </summary>
     public enum ScoreSide
     {
         GameStart = 0,
@@ -12,12 +15,16 @@ namespace PongGame.GamePong
         Right = 2
     }
 
+    /// <summary>
+    /// The ball in the Pong game
+    /// </summary>
     public class Ball : GameObject
     {
+        #region PUBLIC FIELDS
         /// <summary>
         /// Initial speed of the ball
         /// </summary>
-        public const float SPEED = 10;
+        public const float SPEED = 400;
 
         /// <summary>
         /// The cooldown before next speed increase
@@ -33,20 +40,26 @@ namespace PongGame.GamePong
         /// The direction the ball
         /// </summary>
         public Vector2 Direction;
+        #endregion
 
+        #region PRIVATE FIELDS
         private float speedIncreaseCounter = 0;
         private float speed = SPEED;
 
         private Vector2 startPosition;
         private Random rnd = new Random();
-        
-        
+        #endregion
+
+        #region CONSTRUCTERS
         public Ball(Texture2D sprite, Vector2 position) : base(sprite, position)
         {
             Sprite = sprite;
             Position = startPosition = position;
+            RandomDirection();
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
         /// <summary>
         /// Gives the ball a random direction at the beginning of the game
         /// </summary>
@@ -111,9 +124,9 @@ namespace PongGame.GamePong
         /// <param name="gameTime">The game time</param>
         public override void Update(GameTime gameTime)
         {
-            Translate((float)gameTime.TotalGameTime.TotalSeconds);
+            Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
 
-            speedIncreaseCounter += (float)gameTime.TotalGameTime.TotalSeconds;
+            speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (SPEED_COOLDOWN < speedIncreaseCounter)
             {
@@ -121,13 +134,16 @@ namespace PongGame.GamePong
                 speedIncreaseCounter = 0;
             }
         }
+        #endregion
 
+        #region PRIVATE FUNCTIONS
         private void Translate(float deltaTime)
         {
             Direction.Normalize();
 
             Position += Direction * speed * deltaTime;
         }
+        #endregion
     }
 
 

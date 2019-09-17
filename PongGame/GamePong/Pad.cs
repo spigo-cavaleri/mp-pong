@@ -16,6 +16,7 @@ namespace PongGame.GamePong
 
     public class Pad : GameObject
     {
+        #region PUBLIC PROPERTIES
         /// <summary>
         /// true if this pad is running on the server, false otherwise 
         /// </summary>
@@ -42,12 +43,16 @@ namespace PongGame.GamePong
             get;
             set;
         } = 400f;
+        #endregion
 
+        #region PUBLIC FIELDS
         /// <summary>
         /// Name of the pad
         /// </summary>
         public string Name;
+        #endregion
 
+        #region CONSTRUCTERS
         /// <summary>
         /// Construct a pad
         /// </summary>
@@ -60,7 +65,9 @@ namespace PongGame.GamePong
             Sprite = sprite;
             Position = position;
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
         /// <summary>
         /// Updates the game
         /// </summary>
@@ -71,20 +78,22 @@ namespace PongGame.GamePong
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up) && Position.Y > 0)
                 {
-                    Position.Y -= (float)(Speed * gameTime.TotalGameTime.TotalSeconds);
+                    Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
                 {
-                    Position.Y += (float)(Speed * gameTime.TotalGameTime.TotalSeconds);
+                    Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
             }
             else
             {
-                Translate((float)gameTime.TotalGameTime.TotalSeconds);
+                Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
         }
+        #endregion
 
+        #region PRIVATE FUNCTIONS
         private void Translate(float deltaTime)
         {
             switch (keyPress)
@@ -109,5 +118,6 @@ namespace PongGame.GamePong
                     break;
             }
         }
+        #endregion
     }
 }

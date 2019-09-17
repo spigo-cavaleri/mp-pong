@@ -8,9 +8,17 @@ namespace PongGame.GamePong
 {
     public class Map
     {
+        #region CONST VALUES
+        /// <summary>
+        /// The pad off set
+        /// </summary>
         public const int PadOffSetFromEgde = 50;
+        #endregion
 
         #region SINGLETON
+        /// <summary>
+        /// The instance of the map
+        /// </summary>
         public static Map Instance
         {
             get
@@ -27,13 +35,29 @@ namespace PongGame.GamePong
         private static Map instance;
         #endregion
 
+        #region PUBLIC FIELDS
+        /// <summary>
+        /// True if the game has been won, false otherwise
+        /// </summary>
         public bool WonGame = false;
 
+        /// <summary>
+        /// Player one name
+        /// </summary>
         public string PlayerOneName = null;
+
+        /// <summary>
+        /// Player two name
+        /// </summary>
         public string PlayerTwoName = null;
 
+        /// <summary>
+        /// List of active game objects on the map
+        /// </summary>
         public List<GameObject> GameObjects = new List<GameObject>();
+        #endregion
 
+        #region PRIVATE FIELDS
         private Texture2D backgroundSprite;
         private Texture2D ballSprite;
         private Texture2D player1PadSprite;
@@ -53,37 +77,48 @@ namespace PongGame.GamePong
 
         private ContentManager content;
         private GraphicsDevice graphics;
+        #endregion
 
+        #region CONSTRUCTERS
+        /// <summary>
+        /// Constucts a map where the players can play Pong
+        /// </summary>
         public Map()
         {
             content = Game1.Instance.Content;
             graphics = Game1.Instance.GraphicsDevice;
 
-            collisionManager = CollisionManager.Instance;
-
             InitColliderWalls();
         }
+        #endregion
 
+        #region PUBLIC FUNCTIONS
+        /// <summary>
+        /// Loads the content for the game
+        /// </summary>
         public void LoadContent()
         {
             ballSprite = content.Load<Texture2D>("pokeBall");
             player1PadSprite = content.Load<Texture2D>("pipe");
             player2PadSprite = content.Load<Texture2D>("pipe");
 
-            InitBall();
+            collisionManager = CollisionManager.Instance;
+
             InitPlayers();
+            InitBall();
 
             PlayerOneName = "Niki";
             PlayerTwoName = "NotNiki";
         }
 
+        /// <summary>
+        /// Updates the game
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             if (GameObjects != null)
             {
-                collisionManager.Update(gameTime);
-
-
                 if (!(string.IsNullOrEmpty(PlayerOneName) && string.IsNullOrEmpty(PlayerTwoName)))
                 {
                     for (int i = 0; i < GameObjects.Count; i++)
@@ -91,9 +126,15 @@ namespace PongGame.GamePong
                         GameObjects[i].Update(gameTime);
                     }
                 }
+
+                collisionManager.Update(gameTime);
             }
         }
 
+        /// <summary>
+        /// Draws the game
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (backgroundSprite != null)
@@ -106,7 +147,9 @@ namespace PongGame.GamePong
                 GameObjects[i].Draw(spriteBatch);
             }
         }
+        #endregion
 
+        #region PRIVATE FUNCTIONS
         private void InitColliderWalls()
         {
             Vector2 topWallPosition = new Vector2();
@@ -166,5 +209,6 @@ namespace PongGame.GamePong
 
             GameObjects.Add(ball);
         }
+        #endregion
     }
 }
