@@ -48,9 +48,15 @@
     <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="InputField.cs" />
+    <Compile Include="JSONMessages\CreateServerInformationMessage.cs" />
+    <Compile Include="JSONMessages\LoginResponseMessage.cs" />
+    <Compile Include="JSONMessages\SavedHighscore.cs" />
+    <Compile Include="JSONMessages\ServerConfirmation.cs" />
+    <Compile Include="JSONMessages\UserInformationMessage.cs" />
     <Compile Include="Pad.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestHTTP.cs" />
     <Compile Include="Tcp\GameClient.cs" />
     <Compile Include="Tcp\GameServer.cs" />
     <Compile Include="Tcp\WanUtils.cs" />
@@ -61,6 +67,7 @@
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
