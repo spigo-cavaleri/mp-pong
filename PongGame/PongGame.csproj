@@ -43,9 +43,11 @@
   <ItemGroup>
     <Compile Include="Animel.cs" />
     <Compile Include="Ball.cs" />
-    <Compile Include="DataTosSend.cs" />
+    <Compile Include="BallData.cs" />
+    <Compile Include="GameData.cs" />
+    <Compile Include="ReadAndWhriteJson.cs" />
     <Compile Include="Data\TcpDataPacket.cs" />
-	<Compile Include="Game1.cs" />
+    <Compile Include="Game1.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Pad.cs" />
     <Compile Include="Program.cs" />

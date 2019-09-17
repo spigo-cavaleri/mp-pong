@@ -41,8 +41,9 @@ namespace PongGame
         public static float screenWithe;
 
 
-     public   DataTosSend dataBall = new DataTosSend();
-
+        public ReadAndWhriteJson readAndWhriteJson = new ReadAndWhriteJson();
+        public GameData GameData = new GameData();
+   
         private static Game1 instance;
         public static Game1 Instance
         {
@@ -117,23 +118,40 @@ namespace PongGame
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
+      
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            dataBall.JsonWhriteData();
-            dataBall.readData();
 
-            dataBall.BallX = (int)ball.Position.X;
-            dataBall.BallY = (int)ball.Position.Y;
+            readAndWhriteJson.JsonWhriteData();
+            readAndWhriteJson.ReadDataJson();
+
+
+            UpdateGameData();
+
 
             // TODO: Add your update logic here
             ball.Update(gameTime);
             Pad1.Update(gameTime);
             Pad2.Update(gameTime);
             base.Update(gameTime);
+        }
+
+        public void UpdateGameData()
+        {
+
+            GameData.BallXPosition = (int)ball.Position.X;
+            GameData.BallYPosition = (int)ball.Position.Y;
+            GameData.MypositionX = (int)Pad1.Position.X;
+            GameData.MyPositionY = (int)Pad1.Position.Y;
+            GameData.ModstandersPositionX = (int)Pad2.Position.X;
+            GameData.ModstandersPositionY = (int)Pad2.Position.Y;
+            GameData.MyHp = Player1HP;
+            GameData.ModstandersHP = Player2HP; 
+            
         }
 
         /// <summary>
@@ -153,7 +171,7 @@ namespace PongGame
             wallO.Draw(spriteBatch);
             wallN.Draw(spriteBatch);
 
-            spriteBatch.DrawString(Font, $"Player1:{Player1HP}    {dataBall.Newdata.BallX}       Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
+            spriteBatch.DrawString(Font, $"Player1:{Player1HP}    {readAndWhriteJson.NewgameData.BallXPosition}    {readAndWhriteJson.NewgameData.BallYPosition}   {readAndWhriteJson.NewgameData.ModstandersPositionX}   {readAndWhriteJson.NewgameData.ModstandersPositionY}   Player2:{Player2HP}", new Vector2(540, 20), Color.Yellow);
             if(WonGame == true)
             {
                 spriteBatch.DrawString(Font, $"Player {PlayerThatWon} Won The Game Press Enter to Play Again", new Vector2(450, 300), Color.Yellow);
@@ -169,6 +187,8 @@ namespace PongGame
 
             base.Draw(gameTime);
         }
+
+        
        
     }
 }
