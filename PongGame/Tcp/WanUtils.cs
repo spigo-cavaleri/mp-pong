@@ -5,11 +5,14 @@ using System.Net.Sockets;
 namespace PongGame.Tcp
 {
     /// <summary>
-    /// Finds the wan IPV4 on the current mashine that is connected to the internet
+    /// Usefull Wan utilities
     /// </summary>
-    public static class WanIpAddress
+    public static class WanUtils
     {
         #region ENUM
+        /// <summary>
+        /// Ip address to try and ping
+        /// </summary>
         private enum DNSIPAddress
         {
             GooglePrimaryDns = 0,
@@ -23,7 +26,7 @@ namespace PongGame.Tcp
 
         #region EVENTS
         /// <summary>
-        /// Returns an exception from the wan IP address class
+        /// The Wan ip exception event, used for getting the thrown socket exceptions if it fails
         /// </summary>
         public static event WanIpExceptionHandle WanIpException;
         public delegate void WanIpExceptionHandle(string message);
@@ -49,20 +52,29 @@ namespace PongGame.Tcp
 
         #region PRIVATE FIELDS
         private static IPAddress wanIp;
+        private static readonly Random randomPort = new Random();
         #endregion
+
+        #region PUBLIC FUNCTIONS
+        public static ushort GetRandomPortNumber()
+        {
+            return (ushort)randomPort.Next(49153, ushort.MaxValue - 1);
+        }
+        #endregion
+
 
         #region PRIVATE FUCNTIONS
         private static IPAddress GetLocalIpAddress()
         {
             IPAddress wanAddress = null;
-            Random randomPort = new Random();
+
             int tryCounter = 0, tryCounterMax = 6;
 
             while (wanAddress == null)
             {
                 try
                 {
-                    ushort portNumber = (ushort)randomPort.Next(60000, ushort.MaxValue - 1);
+                    ushort portNumber = GetRandomPortNumber();
 
                     using (Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.IP))
                     {
@@ -75,11 +87,11 @@ namespace PongGame.Tcp
 
                     return wanAddress;
                 }
-                catch (Exception e)
+                catch (SocketException e)
                 {
-                    if(WanIpException != null)
+                    if (WanIpException != null)
                     {
-                        WanIpException(string.Format("Wan IPV4 Exception: {0}, on {1} out of {2} tries", e, tryCounter, tryCounterMax));
+                        WanIpException(string.Format("Wan IPV4 Exception, tries {1} out of {2}: {0}", e, tryCounter, tryCounterMax));
                     }
                 }
 
