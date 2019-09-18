@@ -25,10 +25,10 @@ namespace WebServer.Controllers
         }
 
         // POST: api/SubmitHighscore
-        public string Post([FromBody]string value)
+        public ServerConfirmation Post()
         {
+            string value = Request.Content.ReadAsStringAsync().Result;
             bool saved = false;
-            string returnString;
 
             if (value == null)
             {
@@ -54,14 +54,10 @@ namespace WebServer.Controllers
 
             if(saved)
             {
-                returnString = "{\"succes\": true}";
-            }
-            else
-            {
-                returnString = "{\"succes\": false}";
+                return new ServerConfirmation(true);
             }
 
-            return returnString;
+            return new ServerConfirmation(false);
         }
     }
 }

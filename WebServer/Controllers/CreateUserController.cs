@@ -25,15 +25,16 @@ namespace WebServer.Controllers
         }
 
         // POST: api/CreateUser
-        public string Post([FromBody]string value)
+        public LoginResponseMessage Post()
         {
+            string value = Request.Content.ReadAsStringAsync().Result;
             bool wasCreated = false;
             LoginResponseMessage loginResponseMessage;
-            string loginResponse;
 
             if (value == null)
             {
                 // Håndter at der ikke sendes noget :)
+                // return "WHAT?!?!?!";
             }
 
             try
@@ -73,20 +74,7 @@ namespace WebServer.Controllers
                 loginResponseMessage = new LoginResponseMessage(false);
             }
 
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
-
-                serializer.WriteObject(ms, loginResponseMessage);
-
-                ms.Position = 0;
-                StreamReader sr = new StreamReader(ms);
-
-                loginResponse = sr.ReadToEnd();
-            }
-
-            return loginResponse;
+            return loginResponseMessage;
         }
 
         private SavedServerObject FindAvailableGameServer()
