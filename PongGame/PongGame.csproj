@@ -41,28 +41,29 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Button.cs" />
+    <Compile Include="GameLogin\Button.cs" />
     <Compile Include="DataTosSend.cs" />
+    <Compile Include="GameLogin\LoginScreen.cs" />
     <Compile Include="JSONMessages\CreateServerInformationMessage.cs" />
     <Compile Include="JSONMessages\LoginResponseMessage.cs" />
     <Compile Include="JSONMessages\SavedHighscore.cs" />
     <Compile Include="JSONMessages\ServerConfirmation.cs" />
-    <Compile Include="JSONMessages\UserInformationMessage.cs" />	
-	<Compile Include="Game1.cs" />
+    <Compile Include="JSONMessages\UserInformationMessage.cs" />
+    <Compile Include="Game1.cs" />
     <Compile Include="GamePong\Ball.cs" />
-	<Compile Include="GamePong\CollisionManager.cs" />
+    <Compile Include="GamePong\CollisionManager.cs" />
     <Compile Include="GamePong\GameObject.cs" />
     <Compile Include="GamePong\Map.cs" />
     <Compile Include="GamePong\Pad.cs" />
-	<Compile Include="GamePong\Wall.cs" />	
-	<Compile Include="InputField.cs" />
+    <Compile Include="GamePong\Wall.cs" />
+    <Compile Include="GameLogin\InputField.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestHTTP.cs" />
-	<Compile Include="Tcp\GameClient.cs" />
+    <Compile Include="Tcp\GameClient.cs" />
     <Compile Include="Tcp\GameServer.cs" />
     <Compile Include="Tcp\WanUtils.cs" />
-	<Compile Include="Tcp\Data\TcpDataPacket.cs" />
+    <Compile Include="Tcp\Data\TcpDataPacket.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework">

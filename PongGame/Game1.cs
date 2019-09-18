@@ -6,6 +6,7 @@ using PongGame.GamePong;
 
 namespace PongGame
 {
+    public enum GameState { LoginScreen, WaitingForPlayer, Playing }
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
@@ -34,7 +35,23 @@ namespace PongGame
         {
             get;
         }
+        public GameState GameState {
+            get => gameState;
+            set
+            {
+                gameState = value;
+                if (value == GameState.LoginScreen)
+                {
+                    this.IsMouseVisible = true;
+                }
+                else
+                {
+                    this.IsMouseVisible = false;
+                }
+            }
+        }
 
+        private GameState gameState;
         private Map pongMap;
 
         public Game1()
@@ -48,6 +65,8 @@ namespace PongGame
             Content.RootDirectory = "Content";
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            GameState = GameState.LoginScreen;
         }
 
         /// <summary>
@@ -71,6 +90,7 @@ namespace PongGame
         protected override void LoadContent()
         {
             pongMap.LoadContent();
+            LoginScreen.Instance.LoadContent();
         }
 
         /// <summary>
@@ -91,7 +111,20 @@ namespace PongGame
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            pongMap.Update(gameTime);
+
+            switch (GameState)
+            {
+                case GameState.LoginScreen:
+                    LoginScreen.Instance.Update(gameTime);
+                    break;
+                case GameState.WaitingForPlayer:
+                    break;
+                case GameState.Playing:
+                    pongMap.Update(gameTime);
+                    break;
+                default:
+                    break;
+            }
 
             // TODO: Add your update logic here
             base.Update(gameTime);
@@ -106,7 +139,19 @@ namespace PongGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
             SpriteBatch.Begin();
 
-            pongMap.Draw(SpriteBatch);
+            switch (GameState)
+            {
+                case GameState.LoginScreen:
+                    LoginScreen.Instance.Draw(SpriteBatch);
+                    break;
+                case GameState.WaitingForPlayer:
+                    break;
+                case GameState.Playing:
+                    pongMap.Draw(SpriteBatch);
+                    break;
+                default:
+                    break;
+            }
 
             SpriteBatch.End();
             // TODO: Add your drawing code here
