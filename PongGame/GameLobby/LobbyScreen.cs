@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PongGame.Tcp;
 
 namespace PongGame
 {
@@ -58,7 +59,8 @@ namespace PongGame
             else if (lrm.ShouldHostServer)
             {
                 //JegSkalHosteEnServer
-                ServerConfirmation sRespone = RequestHTTP.HostServer("127.0.0.2", "13000");
+
+                ServerConfirmation sRespone = RequestHTTP.HostServer(GameServer.Instance.LocalEndPoint.Address.ToString(), GameServer.Instance.LocalEndPoint.Port.ToString());
                 if (sRespone.ServerSuccess)
                 {
                     Game1.Instance.GameState = GameState.Playing;
@@ -72,6 +74,8 @@ namespace PongGame
             {
                 string iP = lrm.GameServerIP;
                 string port = lrm.GameServerPort;
+
+                GameClient gClient = new GameClient(iP, (ushort)Convert.ToInt32(port));
 
                 //JegSkalConnecteTiliPport
                 Game1.Instance.GameState = GameState.Playing;

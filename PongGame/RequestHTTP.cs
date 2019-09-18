@@ -15,6 +15,10 @@ namespace PongGame
 
         public static LoginResponseMessage CreateAccount(string name, string password)
         {
+            WebRequest request = WebRequest.Create(baseUrl + "api/createuser");
+            //request.Credentials = CredentialCache.DefaultCredentials;
+            request.Method = "POST";
+
             UserInformationMessage uIF = new UserInformationMessage();
 
             uIF.Username = name;
@@ -30,42 +34,67 @@ namespace PongGame
 
             string requestString = sReader.ReadToEnd();
             byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseUrl + "api/createuser");
-            //request.Credentials = CredentialCache.DefaultCredentials;
-            request.Method = "POST";
-            request.ContentType = "application/json";
             request.ContentLength = msgToSend.Length;
-
-
+            request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();
             dataStream.Write(msgToSend, 0, msgToSend.Length);
-            //dataStream.Close();
+            dataStream.Close();
 
             WebResponse response = request.GetResponse();
-            // HRFRA
+
+            using (dataStream = response.GetResponseStream())
+            {
+                DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+                LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(dataStream);
+                return lRM;
+            }
+
+            //MemoryStream mStream = new MemoryStream();
+            //DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
+
+            //dJsonSerializer.WriteObject(mStream, uIF);
+
+            //mStream.Position = 0;
+            //StreamReader sReader = new StreamReader(mStream);
+
+            //string requestString = sReader.ReadToEnd();
+            //byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseUrl + "api/createuser");
+            ////request.Credentials = CredentialCache.DefaultCredentials;
+            //request.Method = "POST";
+            //request.ContentType = "application/json";
+            //request.ContentLength = msgToSend.Length;
+
+
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(msgToSend, 0, msgToSend.Length);
+            ////dataStream.Close();
+
+            //WebResponse response = request.GetResponse();
+            //// HRFRA
+            ////Stream responseStream = response.GetResponseStream();
+            ////StreamReader responseReader = new StreamReader(responseStream);
+
+            ////string responseAsJson = responseReader.ReadToEnd();
+            ////Console.WriteLine();
+            //// HERTIL
+
             //Stream responseStream = response.GetResponseStream();
             //StreamReader responseReader = new StreamReader(responseStream);
 
-            //string responseAsJson = responseReader.ReadToEnd();
-            //Console.WriteLine();
-            // HERTIL
+            //string jsonResponse = responseReader.ReadToEnd();
 
-            Stream responseStream = response.GetResponseStream();
-            StreamReader responseReader = new StreamReader(responseStream);
+            //MemoryStream jsonMS = new MemoryStream(Encoding.UTF8.GetBytes(jsonResponse));
+            //DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
 
-            string jsonResponse = responseReader.ReadToEnd();
+            //LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(jsonMS);
+            //dataStream.Close();
+            //responseStream.Close();
+            //jsonMS.Close();
+            //response.Close();
 
-            MemoryStream jsonMS = new MemoryStream(Encoding.UTF8.GetBytes(jsonResponse));
-            DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
-
-            LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(jsonMS);
-            dataStream.Close();
-            responseStream.Close();
-            jsonMS.Close();
-            response.Close();
-
-            return lRM;
+            //return lRM;
 
             //using(dataStream = response.GetResponseStream())
             //{
