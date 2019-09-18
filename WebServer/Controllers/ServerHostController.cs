@@ -25,9 +25,9 @@ namespace WebServer.Controllers
         }
 
         // POST: api/ServerHost
-        public string Post([FromBody]string value)
+        public ServerConfirmation Post()
         {
-            string hostResponse;
+            string value = Request.Content.ReadAsStringAsync().Result;
             bool saved = false;
 
             if (value == null)
@@ -56,15 +56,10 @@ namespace WebServer.Controllers
 
             if (saved)
             {
-                hostResponse = "{\"succes\": true}";
+                return new ServerConfirmation(true);
             }
-            else
-            {
-                hostResponse = "{\"succes\": false}";
-            }
-
-            return hostResponse;
+            return new ServerConfirmation(false);
         }
-        
+
     }
 }
