@@ -41,6 +41,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="GameLobby\LobbyScreen.cs" />
     <Compile Include="GameLogin\Button.cs" />
     <Compile Include="DataTosSend.cs" />
     <Compile Include="GameLogin\LoginScreen.cs" />

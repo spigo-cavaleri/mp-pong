@@ -91,6 +91,7 @@ namespace PongGame
         {
             pongMap.LoadContent();
             LoginScreen.Instance.LoadContent();
+            LobbyScreen.Instance.LoadContent();
         }
 
         /// <summary>
@@ -118,6 +119,7 @@ namespace PongGame
                     LoginScreen.Instance.Update(gameTime);
                     break;
                 case GameState.WaitingForPlayer:
+                    LobbyScreen.Instance.Update(gameTime);
                     break;
                 case GameState.Playing:
                     pongMap.Update(gameTime);
@@ -145,6 +147,7 @@ namespace PongGame
                     LoginScreen.Instance.Draw(SpriteBatch);
                     break;
                 case GameState.WaitingForPlayer:
+                    LobbyScreen.Instance.Draw(SpriteBatch);
                     break;
                 case GameState.Playing:
                     pongMap.Draw(SpriteBatch);

@@ -63,16 +63,19 @@ namespace PongGame
             loginButton.SetButtonDelegate(() => {
                 string username = usernameInput.InputText;
                 string password = passwordInput.InputText;
+                LoginResponseMessage lResponse = RequestHTTP.LogInToAccount(username, password);
                 // RequestHTTP.LoginToAccount(username, password);
 
-                Game1.Instance.GameState = GameState.Playing;
+                Game1.Instance.GameState = GameState.WaitingForPlayer;
+                LobbyScreen.Instance.ParseLoginRespone(lResponse);
             });
             createButton.SetButtonDelegate(() => {
                 string username = usernameInput.InputText;
                 string password = passwordInput.InputText;
-
+                LoginResponseMessage cResponse = RequestHTTP.CreateAccount(username, password);
                 // RequestHTTP.CreateAccount(username, password);
-                Game1.Instance.GameState = GameState.Playing;
+                Game1.Instance.GameState = GameState.WaitingForPlayer;
+                LobbyScreen.Instance.ParseLoginRespone(cResponse);
             });
         }
 
