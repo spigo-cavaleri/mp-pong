@@ -99,8 +99,6 @@ namespace PongGame.Tcp
                     IsBackground = false
                 };
 
-                Console.WriteLine("Server constructed");
-
                 Start(serverThread);
 
             }

@@ -130,9 +130,7 @@ namespace PongGame.Tcp
         {
             if (PacketsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
             {
-                Console.WriteLine("Client SetDataToSend: is called, data: {0}", data.Data);
                 PacketsToSend.Enqueue(data);
-                Console.WriteLine(PacketsToSend.Count);
             }
         }
 
@@ -180,8 +178,6 @@ namespace PongGame.Tcp
         #region PRIVATE FUNCTIONS
         private void ClientLoop()
         {
-            Console.WriteLine("Client loop");
-
             // initialize the queues use form data wrapping
             PacketsToReceive = new ConcurrentQueue<TcpDataPacket>();
             PacketsToSend = new ConcurrentQueue<TcpDataPacket>();
@@ -198,7 +194,6 @@ namespace PongGame.Tcp
                     {
                         string data = null;
                         data = reader.ReadLine();
-                        Console.WriteLine("Client: data read");
 
                         if (!string.IsNullOrEmpty(data))
                         {
@@ -209,13 +204,11 @@ namespace PongGame.Tcp
                     // Sends all packets to the server
                     while (PacketsToSend.Count > 0)
                     {
-                        Console.WriteLine("Client: There is a packet to send");
 
                         if (PacketsToSend.TryDequeue(out TcpDataPacket nextPacketToSend))
                         {
                             writer.WriteLine(nextPacketToSend.Data);
                             writer.Flush();
-                            Console.WriteLine("Sendt packet");
                         }
                     }
                 }
