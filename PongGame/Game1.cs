@@ -4,7 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 
 using PongGame.GamePong;
-
+using PongGame.Tcp;
+using PongGame.Data;
 
 namespace PongGame
 {
@@ -34,7 +35,7 @@ namespace PongGame
         #endregion
 
         public GraphicsDeviceManager GraphicsDeviceManager;
-
+        
         public SpriteBatch SpriteBatch
         {
             get;
@@ -57,6 +58,11 @@ namespace PongGame
 
         private GameState gameState;
         private Map pongMap;
+        private SpriteFont font;
+        public static GameData GameData;
+        private GameClientTest clientTest = new GameClientTest();
+        private TcpDataPacket TcpData = new TcpDataPacket();
+
 
         public Game1()
         {
@@ -70,7 +76,7 @@ namespace PongGame
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            GameState = GameState.LoginScreen;
+            GameState = GameState.Playing;
         }
 
         /// <summary>
@@ -83,7 +89,7 @@ namespace PongGame
         {
             // TODO: Add your initialization logic here
             pongMap = Map.Instance;
-
+            GameData = new GameData();
             base.Initialize();
         }
 
@@ -98,6 +104,8 @@ namespace PongGame
             LoginScreen.Instance.LoadContent();
             LobbyScreen.Instance.LoadContent();
 
+            font = Content.Load<SpriteFont>("Font");
+            clientTest.Connect("127.0.0.1", "lluliululalala");
         }
 
         /// <summary>
@@ -119,6 +127,10 @@ namespace PongGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+
+           
+
+            
             switch (GameState)
             {
                 case GameState.LoginScreen:
@@ -134,6 +146,8 @@ namespace PongGame
                     break;
             }
 
+          
+
 
             // TODO: Add your update logic here
             base.Update(gameTime);
@@ -148,6 +162,7 @@ namespace PongGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin();
+            SpriteBatch.DrawString(font, $"Player 1 Name        {GameData.BallXPosition}             player 2 Name", new Vector2(GraphicsDevice.Viewport.Width/2-100, 20), Color.Red);
 
 
             switch (GameState)

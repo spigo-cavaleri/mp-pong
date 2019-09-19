@@ -314,7 +314,7 @@ namespace PongGame.Tcp
                             { }
 
                             // sends the data to the client in the client list 
-                            client.SetDataToSend(packetForFoundClient.Data);
+              //              client.SetDataToSend(packetForFoundClient.Data);
                         }
                     }
                 }

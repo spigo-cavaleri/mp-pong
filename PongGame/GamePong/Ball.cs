@@ -125,7 +125,7 @@ namespace PongGame.GamePong
         public override void Update(GameTime gameTime)
         {
             Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
-
+            Game1.GameData.BallXPosition = (int)Position.X;
             speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (SPEED_COOLDOWN < speedIncreaseCounter)

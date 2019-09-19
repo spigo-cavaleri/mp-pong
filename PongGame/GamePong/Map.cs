@@ -63,6 +63,8 @@ namespace PongGame.GamePong
         private Texture2D player1PadSprite;
         private Texture2D player2PadSprite;
 
+
+
         private Wall topWall;
         private Wall buttomWall;
         private Wall leftWall;
@@ -104,6 +106,7 @@ namespace PongGame.GamePong
 
             collisionManager = CollisionManager.Instance;
 
+
             InitPlayers();
             InitBall();
 
@@ -139,8 +142,12 @@ namespace PongGame.GamePong
         {
             if (backgroundSprite != null)
             {
+               
                 spriteBatch.Draw(backgroundSprite, new Vector2(), Color.White);
+        
             }
+
+           
 
             for (int i = 0; i < GameObjects.Count; i++)
             {
