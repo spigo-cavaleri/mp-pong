@@ -23,7 +23,7 @@ namespace PongGame.Tcp
         #endregion
 
         #region SINGLETON
-        public GameServer Instance
+        public static GameServer Instance
         {
             get
             {
@@ -36,7 +36,7 @@ namespace PongGame.Tcp
             }
         }
 
-        private GameServer instance;
+        private static GameServer instance;
         #endregion
 
         #region PROPERTIES
@@ -77,7 +77,7 @@ namespace PongGame.Tcp
         /// <summary>
         /// Constructs a game server
         /// </summary>
-        public GameServer()
+        private GameServer()
         {
             try
             {

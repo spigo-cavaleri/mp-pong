@@ -25,11 +25,11 @@ namespace WebServer.Controllers
         }
 
         // POST: api/Login
-        public string Post([FromBody]string value)
+        public LoginResponseMessage Post()
         {
+            string value = Request.Content.ReadAsStringAsync().Result;
             bool exists = false;
             LoginResponseMessage loginResponseMessage;
-            string loginResponse;
 
             if (value == null)
             {
@@ -55,27 +55,29 @@ namespace WebServer.Controllers
 
             if (exists)
             {
-                loginResponseMessage = new LoginResponseMessage(true, true);
+                SavedServerObject gameServer = FindAvailableGameServer();
+
+                if (gameServer == default(SavedServerObject))
+                {
+                    loginResponseMessage = new LoginResponseMessage(true, true);
+                }
+                else
+                {
+                    gameServer.PlayerCount += 1;
+                    loginResponseMessage = new LoginResponseMessage(true, false, gameServer.IP, gameServer.Port);
+                }
             }
             else
             {
                 loginResponseMessage = new LoginResponseMessage(false);
             }
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
-
-                serializer.WriteObject(ms, loginResponseMessage);
-
-                ms.Position = 0;
-                StreamReader sr = new StreamReader(ms);
-
-                loginResponse = sr.ReadToEnd();
-            }
-
-            return loginResponse;
+            return loginResponseMessage;
         }
-        
+
+        private SavedServerObject FindAvailableGameServer()
+        {
+            return InMemoryDatabase.SavedServerObjects.Find(item => !item.GameFull);
+        }
     }
 }

@@ -25,15 +25,16 @@ namespace WebServer.Controllers
         }
 
         // POST: api/CreateUser
-        public string Post([FromBody]string value)
+        public LoginResponseMessage Post()
         {
+            string value = Request.Content.ReadAsStringAsync().Result;
             bool wasCreated = false;
             LoginResponseMessage loginResponseMessage;
-            string loginResponse;
 
             if (value == null)
             {
                 // Håndter at der ikke sendes noget :)
+                // return "WHAT?!?!?!";
             }
 
             try
@@ -55,26 +56,30 @@ namespace WebServer.Controllers
 
             if (wasCreated)
             {
-                loginResponseMessage = new LoginResponseMessage(true, true);
+                SavedServerObject gameServer = FindAvailableGameServer();
+
+                if (gameServer == default(SavedServerObject))
+                {
+                    loginResponseMessage = new LoginResponseMessage(true, true);
+                }
+                else
+                {
+                    gameServer.PlayerCount += 1;
+                    loginResponseMessage = new LoginResponseMessage(true, false, gameServer.IP, gameServer.Port);
+                }
+
             }
             else
             {
                 loginResponseMessage = new LoginResponseMessage(false);
             }
 
-            using (MemoryStream ms = new MemoryStream())
-            {
-                DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+            return loginResponseMessage;
+        }
 
-                serializer.WriteObject(ms, loginResponseMessage);
-
-                ms.Position = 0;
-                StreamReader sr = new StreamReader(ms);
-
-                loginResponse = sr.ReadToEnd();
-            }
-
-            return loginResponse;
+        private SavedServerObject FindAvailableGameServer()
+        {
+            return InMemoryDatabase.SavedServerObjects.Find(item => !item.GameFull);
         }
     }
 }
