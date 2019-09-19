@@ -63,6 +63,7 @@
     <Compile Include="RequestHTTP.cs" />
     <Compile Include="Tcp\GameClient.cs" />
     <Compile Include="Tcp\GameServer.cs" />
+    <Compile Include="Tcp\JSONGeneric\JSONSerializer.cs" />
     <Compile Include="Tcp\WanUtils.cs" />
     <Compile Include="Tcp\Data\TcpDataPacket.cs" />
   </ItemGroup>
