@@ -5,7 +5,7 @@ using System.Text;
 namespace PongGame.Tcp.JSONGeneric
 {
     /// <summary>
-    /// Generic json serializer
+    /// Generic json serializer that can distinguish between types of objects that has been serialized before deserializetion
     /// </summary>
     public static class JSONSerializer
     {
