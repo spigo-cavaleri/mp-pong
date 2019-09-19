@@ -10,13 +10,15 @@ using System.Runtime.Serialization.Json;
 namespace PongGame
 {
     static class RequestHTTP
-    {   
+    {
+        private static string baseUrl = "http://10.131.69.120:49823/";
+
         public static LoginResponseMessage CreateAccount(string name, string password)
         {
-            WebRequest request = WebRequest.Create("http//localhost/api/createuser");
-            request.Credentials = CredentialCache.DefaultCredentials;
+            WebRequest request = WebRequest.Create(baseUrl + "api/createuser");
+            //request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
-            
+
             UserInformationMessage uIF = new UserInformationMessage();
 
             uIF.Username = name;
@@ -31,7 +33,7 @@ namespace PongGame
             StreamReader sReader = new StreamReader(mStream);
 
             string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.ASCII.GetBytes(requestString);
+            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
             request.ContentLength = msgToSend.Length;
             request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();
@@ -40,18 +42,72 @@ namespace PongGame
 
             WebResponse response = request.GetResponse();
 
-            using(dataStream = response.GetResponseStream())
+            using (dataStream = response.GetResponseStream())
             {
                 DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
                 LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(dataStream);
                 return lRM;
             }
+
+            //MemoryStream mStream = new MemoryStream();
+            //DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
+
+            //dJsonSerializer.WriteObject(mStream, uIF);
+
+            //mStream.Position = 0;
+            //StreamReader sReader = new StreamReader(mStream);
+
+            //string requestString = sReader.ReadToEnd();
+            //byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+
+            //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseUrl + "api/createuser");
+            ////request.Credentials = CredentialCache.DefaultCredentials;
+            //request.Method = "POST";
+            //request.ContentType = "application/json";
+            //request.ContentLength = msgToSend.Length;
+
+
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(msgToSend, 0, msgToSend.Length);
+            ////dataStream.Close();
+
+            //WebResponse response = request.GetResponse();
+            //// HRFRA
+            ////Stream responseStream = response.GetResponseStream();
+            ////StreamReader responseReader = new StreamReader(responseStream);
+
+            ////string responseAsJson = responseReader.ReadToEnd();
+            ////Console.WriteLine();
+            //// HERTIL
+
+            //Stream responseStream = response.GetResponseStream();
+            //StreamReader responseReader = new StreamReader(responseStream);
+
+            //string jsonResponse = responseReader.ReadToEnd();
+
+            //MemoryStream jsonMS = new MemoryStream(Encoding.UTF8.GetBytes(jsonResponse));
+            //DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+
+            //LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(jsonMS);
+            //dataStream.Close();
+            //responseStream.Close();
+            //jsonMS.Close();
+            //response.Close();
+
+            //return lRM;
+
+            //using(dataStream = response.GetResponseStream())
+            //{
+            //    DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
+            //    LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(dataStream);
+            //    return lRM;
+            //}
         }
 
         public static LoginResponseMessage LogInToAccount(string name, string password)
         {
-            WebRequest request = WebRequest.Create("http//localhost/api/login");
-            request.Credentials = CredentialCache.DefaultCredentials;
+            WebRequest request = WebRequest.Create(baseUrl + "api/login");
+            //request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
 
             UserInformationMessage uIF = new UserInformationMessage();
@@ -68,7 +124,7 @@ namespace PongGame
             StreamReader sReader = new StreamReader(mStream);
 
             string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.ASCII.GetBytes(requestString);
+            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
             request.ContentLength = msgToSend.Length;
             request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();
@@ -92,8 +148,8 @@ namespace PongGame
         
         public static ServerConfirmation HostServer(string IP, string Port)
         {
-            WebRequest request = WebRequest.Create("http//localhost/api/serverhost");
-            request.Credentials = CredentialCache.DefaultCredentials;
+            WebRequest request = WebRequest.Create(baseUrl + "api/serverhost");
+            //request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
 
             CreateServerInformationMessage cServer = new CreateServerInformationMessage(IP, Port);
@@ -107,7 +163,7 @@ namespace PongGame
             StreamReader sReader = new StreamReader(mStream);
 
             string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.ASCII.GetBytes(requestString);
+            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
             request.ContentLength = msgToSend.Length;
             request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();
@@ -126,8 +182,8 @@ namespace PongGame
 
         public static ServerConfirmation SendHighscore(string name, int score)
         {
-            WebRequest request = WebRequest.Create("http//localhost/api/submithighscore");
-            request.Credentials = CredentialCache.DefaultCredentials;
+            WebRequest request = WebRequest.Create(baseUrl + "api/submithighscore");
+            //request.Credentials = CredentialCache.DefaultCredentials;
             request.Method = "POST";
 
             SavedHighscore sHS = new SavedHighscore(name, score);
@@ -141,7 +197,7 @@ namespace PongGame
             StreamReader sReader = new StreamReader(mStream);
 
             string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.ASCII.GetBytes(requestString);
+            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
             request.ContentLength = msgToSend.Length;
             request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();

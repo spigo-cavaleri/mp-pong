@@ -193,6 +193,7 @@
     <Compile Include="JSONMessages\CreateServerInformationMessage.cs" />
     <Compile Include="JSONMessages\LoginResponseMessage.cs" />
     <Compile Include="JSONMessages\SavedHighscore.cs" />
+    <Compile Include="JSONMessages\ServerConfirmation.cs" />
     <Compile Include="JSONMessages\UserInformationMessage.cs" />
     <Compile Include="MakeshiftDatabase\InMemoryDatabase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
