@@ -45,7 +45,6 @@
     <Compile Include="ReadAndWhriteJson.cs" />
     <Compile Include="GameLobby\LobbyScreen.cs" />
     <Compile Include="GameLogin\Button.cs" />
-    <Compile Include="DataTosSend.cs" />
     <Compile Include="GameLogin\LoginScreen.cs" />
     <Compile Include="JSONMessages\CreateServerInformationMessage.cs" />
     <Compile Include="JSONMessages\LoginResponseMessage.cs" />

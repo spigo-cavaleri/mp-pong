@@ -139,20 +139,6 @@ namespace PongGame
             base.Update(gameTime);
         }
 
-        public void UpdateGameData()
-        {
-
-            GameData.BallXPosition = (int)ball.Position.X;
-            GameData.BallYPosition = (int)ball.Position.Y;
-            GameData.MypositionX = (int)Pad1.Position.X;
-            GameData.MyPositionY = (int)Pad1.Position.Y;
-            GameData.ModstandersPositionX = (int)Pad2.Position.X;
-            GameData.ModstandersPositionY = (int)Pad2.Position.Y;
-            GameData.MyHp = Player1HP;
-            GameData.ModstandersHP = Player2HP; 
-            
-        }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>

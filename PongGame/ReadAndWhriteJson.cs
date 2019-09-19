@@ -26,7 +26,7 @@ namespace PongGame
 
             using (FileStream fs = new FileStream("BallPosition.json", FileMode.Create))
             {
-                Jsonf.WriteObject(fs, Game1.Instance.GameData);
+           //     Jsonf.WriteObject(fs, Game1.Instance.GameData);
             }
         }
       
@@ -36,7 +36,7 @@ namespace PongGame
             DataContractJsonSerializer Jsonf = new DataContractJsonSerializer(typeof(GameData));
             using (FileStream fs = new FileStream("BallPosition.json", FileMode.Open))
             {
-             NewgameData  = (GameData)Jsonf.ReadObject(fs);
+       //      NewgameData  = (GameData)Jsonf.ReadObject(fs);
             }
             
         }
