@@ -15,20 +15,23 @@ namespace PongGame.Tcp.JSONGeneric
         /// <typeparam name="T">The type of object to serialize</typeparam>
         /// <param name="dataPacketToSerialize">The object to serialize</param>
         /// <param name="data">The serialize data in string form</param>
+        /// <param name="encoding">The encoding used to serialize</param>
         /// <returns>True if the serializetion is successful, false otherwise</returns>
-        public static bool SerializeData<T>(T dataPacketToSerialize, out string data)
-        {
+        public static bool SerializeData<T>(T dataPacketToSerialize, out string data, Encoding encoding)
+        {   
             data = null;
 
             MemoryStream memoryStream = new MemoryStream();
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
 
+            //Writes the T object into the memory stream
             serializer.WriteObject(memoryStream, dataPacketToSerialize);
 
+            // Repositions the reading starting point of the memory stream to the begining
             memoryStream.Position = 0;
-            using (StreamReader streamReader = new StreamReader(memoryStream, Encoding.ASCII))
+            using (StreamReader streamReader = new StreamReader(memoryStream, encoding))
             {
-                /// formats the data to inculde the type of object it's serialized
+                // formats the data to inculde the type of object it's serialized this is used at the deserializers end
                 data = string.Format("{0}:{1}", dataPacketToSerialize.GetType().ToString(), streamReader.ReadToEnd());
             }
 
@@ -47,15 +50,19 @@ namespace PongGame.Tcp.JSONGeneric
         /// <typeparam name="T">The type of object to deserialize to</typeparam>
         /// <param name="data">The data to deserialize</param>
         /// <param name="dataPacket">The deserialize object</param>
+        /// <param name="encoding">The encoding used for deserializetion</param>
         /// <returns>True if the deserializetion is successful, false otherwise</returns>
-        public static bool DeSerializeData<T>(string data, out T dataPacket)
+        public static bool DeSerializeData<T>(string data, out T dataPacket, Encoding encoding)
         {
+            dataPacket = default(T);
+
+            // Splites the data string into a object type and the data the 
             if (SplitData(data, out string type, out string dataPacketToDeSerialize))
             {
                 // Compares type with the T type object
                 if (type == typeof(T).ToString())
                 {
-                    MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(dataPacketToDeSerialize));
+                    MemoryStream memoryStream = new MemoryStream(encoding.GetBytes(dataPacketToDeSerialize));
                     DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(T));
 
                     dataPacket = (T)deSerializer.ReadObject(memoryStream);
@@ -64,8 +71,6 @@ namespace PongGame.Tcp.JSONGeneric
                 }
 
             }
-
-            dataPacket = default(T);
 
             return false;
         }
@@ -79,6 +84,9 @@ namespace PongGame.Tcp.JSONGeneric
         /// <returns>True if the spilt is successful, false otherwise</returns>
         private static bool SplitData(string data, out string type, out string dataPacketToDeSerialize)
         {
+            type = null;
+            dataPacketToDeSerialize = null;
+
             if (data != null)
             {
                 string[] splitData = data.Split(':');
@@ -100,11 +108,6 @@ namespace PongGame.Tcp.JSONGeneric
                 dataPacketToDeSerialize = sb.ToString();
 
                 return true;
-            }
-            else
-            {
-                type = null;
-                dataPacketToDeSerialize = null;
             }
 
             return false;
