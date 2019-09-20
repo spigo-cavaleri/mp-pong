@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
 
-using PongGame.Data;
+using PongGame.Tcp.Data;
+using PongGame.Tcp.JSONGeneric;
 
 namespace PongGame.Tcp
 {
@@ -159,14 +160,18 @@ namespace PongGame.Tcp
         /// Broadcast message to all cconnected clients
         /// </summary>
         /// <param name="data">The data to broadcast</param>
-        public void BroadCast(string data)
+        public void BroadCast<T>(T dataPacket)
         {
             if (gameClients != null)
             {
-                // enqueues a Tcp packet for each client in the current client list
-                foreach (GameClient client in gameClients)
+                // Tries the serialize the data packet into a string and sends it to the tcp client
+                if (JSONSerializer.SerializeData(dataPacket, out string data, Encoding.ASCII))
                 {
-                    packetsToSend.Enqueue(new TcpDataPacket(client, data));
+                    // enqueues a Tcp packet for each client in the current client list
+                    foreach (GameClient client in gameClients)
+                    {
+                        packetsToSend.Enqueue(new TcpDataPacket(client, data));
+                    }
                 }
             }
         }
@@ -174,21 +179,27 @@ namespace PongGame.Tcp
         /// <summary>
         /// Sends data to a specific client via the tcp data packet
         /// </summary>
-        /// <param name="data"></param>
-        public void SendToClient(TcpDataPacket data)
+        /// <param name="client">The client to send to</param>
+        /// <param name="datapacket">The data packet to send</param>
+        public void SendToClient<T>(GameClient client, T dataPacket)
         {
-            // Enqueue the data to send to client in the servers tcp packet queue
-            packetsToSend.Enqueue(data);
+            if (JSONSerializer.SerializeData(dataPacket, out string data, Encoding.ASCII))
+            {
+                TcpDataPacket packet = new TcpDataPacket(client, data);
+
+                // Enqueue the data to send to client in the servers tcp packet queue
+                packetsToSend.Enqueue(packet);
+            }
         }
 
         /// <summary>
         /// Gets the data that is received by the server
         /// </summary>
         /// <returns>Returns an array of Tcp packets if any, otherwise returns null</returns>
-        public TcpDataPacket[] GetDataToReceive()
+        public T[] GetDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get
-            ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
+            ConcurrentBag<T> packets = new ConcurrentBag<T>();
 
             if (packetsToReceive != null)
             {
@@ -196,7 +207,10 @@ namespace PongGame.Tcp
                 {
                     if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
                     {
-                        packets.Add(packet);
+                        if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
+                        {
+                            packets.Add(dataPacket);
+                        }
                     }
                 }
             }
@@ -280,7 +294,7 @@ namespace PongGame.Tcp
             foreach (GameClient client in gameClients)
             {
                 // temp array of the packets to receive from the current client
-                TcpDataPacket[] packets = client.GetDataToReceive();
+                TcpDataPacket[] packets = client.GetDataToReceiveServer();
                 if (packets != null)
                 {
                     for (int i = 0; i < packets.Length; i++)
@@ -312,7 +326,7 @@ namespace PongGame.Tcp
                             { }
 
                             // sends the data to the client in the client list 
-                            client.SetDataToSend(packetForFoundClient.Data);
+                            client.SetDataToSendServer(packetForFoundClient);
                         }
                     }
                 }

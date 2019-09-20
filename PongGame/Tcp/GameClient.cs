@@ -6,7 +6,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-using PongGame.Data;
+using PongGame.Tcp.Data;
+using PongGame.Tcp.JSONGeneric;
 
 namespace PongGame.Tcp
 {
@@ -110,11 +111,25 @@ namespace PongGame.Tcp
         }
 
         /// <summary>
-        /// Sends a data to the server
+        /// Send data to the server
         /// </summary>
-        /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        public void SetDataToSend(string data)
+        /// <typeparam name="T">The type of object to send</typeparam>
+        /// <param name="dataPacket">The object to send</param>
+        public void SetDataToSend<T>(T dataPacket)
         {
+            SetDataToSend(dataPacket, Encoding.ASCII);
+        }
+
+        /// <summary>
+        /// Sends data to the server
+        /// </summary>
+        /// <typeparam name="T">The type of object to send</typeparam>
+        /// <param name="dataPacket">The object to send</param>
+        /// <param name="encoding">The encoding used to send with</param>
+        public void SetDataToSend<T>(T dataPacket, Encoding encoding)
+        {
+            JSONSerializer.SerializeData(dataPacket, out string data, encoding);
+
             if (!string.IsNullOrEmpty(data))
             {
                 SetDataToSend(new TcpDataPacket(this, data));
@@ -122,11 +137,12 @@ namespace PongGame.Tcp
         }
 
         /// <summary>
-        /// Sends data to the server, 
-        /// controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
+        /// This is a server specific function and shouldn't be called anywhere else !!
+        /// Sends data to the client in the server list of clients.
+        /// Controls if the client in the data packet matches the current client.
         /// </summary>
         /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        public void SetDataToSend(TcpDataPacket data)
+        public void SetDataToSendServer(TcpDataPacket data)
         {
             if (PacketsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
             {
@@ -134,17 +150,39 @@ namespace PongGame.Tcp
             }
         }
 
+        public T[] GetDataToReceive<T>()
+        {
+            ConcurrentBag<T> packets = new ConcurrentBag<T>();
+
+            if (PacketsToReceive != null && PacketsToReceive.Count > 0)
+            {
+                while (PacketsToReceive.Count > 0)
+                {
+                    if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
+                    {
+                        if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
+                        {
+                            packets.Add(dataPacket);
+                        }
+                    }
+                }
+            }
+
+            return packets.ToArray();
+        }
+
         /// <summary>
+        /// This is a server specific function and shouldn't be called anywhere else !!
         /// Returns an array of data packets that is received by this client
         /// </summary>
         /// <returns>The data packets received from the server, null if the array is empty</returns>
-        public TcpDataPacket[] GetDataToReceive()
+        public TcpDataPacket[] GetDataToReceiveServer()
         {
+            // Temporary bag for storing all the packets to get
+            ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
+
             if (PacketsToReceive != null && PacketsToReceive.Count > 0)
             {
-                // Temporary bag for storing all the packets to get
-                ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
-
                 while (PacketsToReceive.Count > 0)
                 {
                     if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
@@ -152,11 +190,9 @@ namespace PongGame.Tcp
                         packets.Add(packet);
                     }
                 }
-
-                return packets.ToArray();
             }
 
-            return new ConcurrentBag<TcpDataPacket>().ToArray();
+            return packets.ToArray();
         }
 
         /// <summary>
