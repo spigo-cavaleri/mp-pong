@@ -130,10 +130,10 @@ namespace PongGame.GamePong
                 {
                     string received = data[i].Data;
                     string[] split = received.Split(':');
-                    float receivedOtherY = (int)Convert.ToDecimal(split[0]);
-                    float receivedMeY = (int)Convert.ToDecimal(split[0]);
-                    float receivedBallX = (int)Convert.ToDecimal(split[1]);
-                    float receivedBallY = (int)Convert.ToDecimal(split[2]);
+                    float receivedOtherY = (int)Convert.ToInt32(split[0]);
+                    float receivedMeY = (int)Convert.ToInt32(split[1]);
+                    float receivedBallX = (int)Convert.ToInt32(split[2]);
+                    float receivedBallY = (int)Convert.ToInt32(split[3]);
 
                     player1Pad.Position = new Vector2(player1Pad.Position.X, receivedOtherY);
                     player2Pad.Position = new Vector2(player2Pad.Position.X, receivedMeY);
@@ -172,7 +172,7 @@ namespace PongGame.GamePong
                 }
 
                 // Send
-                string min = player1Pad.Position.Y + ":" + player2Pad.Position.Y + ":" + ball.Position.X + ":" + ball.Position.Y;
+                string min = Math.Round(player1Pad.Position.Y) + ":" + Math.Round(player2Pad.Position.Y) + ":" + Math.Round(ball.Position.X) + ":" + Math.Round(ball.Position.Y);
                 GameServer.Instance.BroadCast(min);
             }
         }
