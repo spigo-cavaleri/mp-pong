@@ -124,63 +124,11 @@ namespace PongGame.GamePong
         {
             if(!this.isServer)
             {
-                // Receive
-                Data.TcpDataPacket[] data = gameClient.GetDataToReceive();
-                //for (int i = 0; i < data.Length; i++)
-                //{
-                // Tager kun sidste modtagne pakke :)
-                if(data.Length > 0)
-                {
-                    string received = data[data.Length -1].Data;
-                    string[] split = received.Split(':');
-                    float receivedOtherY = (int)Convert.ToInt32(split[0]);
-                    float receivedMeY = (int)Convert.ToInt32(split[1]);
-                    float receivedBallX = (int)Convert.ToInt32(split[2]);
-                    float receivedBallY = (int)Convert.ToInt32(split[3]);
-
-                    player1Pad.Position = new Vector2(player1Pad.Position.X, receivedOtherY);
-                    player2Pad.Position = new Vector2(player2Pad.Position.X, receivedMeY);
-                    ball.Position = new Vector2(receivedBallX, receivedBallY);
-                }
-
-                // Game Logic
-                MPKeyPress intent = player2Pad.ClientIntent();
-
-                // Send
-                string min = "intent:" + (int)intent;
-                gameClient.SetDataToSend(min);
+                HandleClientUpdate(gameTime);
             }
             else
             {
-                // Receive
-                Data.TcpDataPacket[] data = GameServer.Instance.GetDataToReceive();
-                for (int i = 0; i < data.Length; i++)
-                {
-                    string received = data[i].Data;
-                    string[] split = received.Split(':');
-                    MPKeyPress intent = (MPKeyPress) Convert.ToInt32(split[1]);
-
-                    player2Pad.HandleClientIntent(gameTime, intent);
-                }
-
-                // Game Logic
-                if (GameObjects != null)
-                {
-                    for (int i = 0; i < GameObjects.Count; i++)
-                    {
-                        GameObjects[i].Update(gameTime);
-                    }
-
-                    collisionManager.Update(gameTime);
-                }
-
-                // Send
-                int playerMeY = (int)Math.Round(player1Pad.Position.Y);
-                int playerOtherY = (int)Math.Round(player2Pad.Position.Y);
-                int ballX = (int)Math.Round(ball.Position.X);
-                int ballY = (int)Math.Round(ball.Position.Y);
-                string min = playerMeY + ":" + playerOtherY + ":" + ballX + ":" + ballY;
-                GameServer.Instance.BroadCast(min);
+                HandleServerUpdate(gameTime);
             }
         }
 
@@ -295,6 +243,68 @@ namespace PongGame.GamePong
             ball = new Ball(ballSprite, startPosition);
 
             GameObjects.Add(ball);
+        }
+
+        private void HandleServerUpdate(GameTime gameTime)
+        {
+            // Receive
+            Data.TcpDataPacket[] data = GameServer.Instance.GetDataToReceive();
+            for (int i = 0; i < data.Length; i++)
+            {
+                string received = data[i].Data;
+                string[] split = received.Split(':');
+                MPKeyPress intent = (MPKeyPress)Convert.ToInt32(split[1]);
+
+                player2Pad.HandleClientIntent(gameTime, intent);
+            }
+
+            // Game Logic
+            if (GameObjects != null)
+            {
+                for (int i = 0; i < GameObjects.Count; i++)
+                {
+                    GameObjects[i].Update(gameTime);
+                }
+
+                collisionManager.Update(gameTime);
+            }
+
+            // Send
+            int playerMeY = (int)Math.Round(player1Pad.Position.Y);
+            int playerOtherY = (int)Math.Round(player2Pad.Position.Y);
+            int ballX = (int)Math.Round(ball.Position.X);
+            int ballY = (int)Math.Round(ball.Position.Y);
+            string min = playerMeY + ":" + playerOtherY + ":" + ballX + ":" + ballY;
+            GameServer.Instance.BroadCast(min);
+        }
+
+        private void HandleClientUpdate(GameTime gameTime)
+        {
+            // Receive
+            Data.TcpDataPacket[] data = gameClient.GetDataToReceive();
+            //for (int i = 0; i < data.Length; i++)
+            //{
+            // Tager kun sidste modtagne pakke :)
+            if (data.Length > 0)
+            {
+                string received = data[data.Length - 1].Data;
+                string[] split = received.Split(':');
+                float receivedOtherY = (int)Convert.ToInt32(split[0]);
+                float receivedMeY = (int)Convert.ToInt32(split[1]);
+                float receivedBallX = (int)Convert.ToInt32(split[2]);
+                float receivedBallY = (int)Convert.ToInt32(split[3]);
+
+                player1Pad.Position = new Vector2(player1Pad.Position.X, receivedOtherY);
+                player2Pad.Position = new Vector2(player2Pad.Position.X, receivedMeY);
+                ball.Position = new Vector2(receivedBallX, receivedBallY);
+            }
+
+            // Game Logic
+            MPKeyPress intent = player2Pad.ClientIntent();
+
+            // Send
+            string min = "intent:" + (int)intent;
+            gameClient.SetDataToSend(min);
         }
         #endregion
     }
