@@ -27,7 +27,7 @@ namespace WebServer
         }
         public bool GameFull
         {
-            get => this.playerCount < 2;
+            get => this.playerCount >= 2;
         }
 
         private string ip;

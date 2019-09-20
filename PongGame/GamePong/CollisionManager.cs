@@ -65,6 +65,10 @@ namespace PongGame.GamePong
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
+            if(!Map.Instance.IsServer)
+            {
+                return;
+            }
             Collision();
         }
         #endregion

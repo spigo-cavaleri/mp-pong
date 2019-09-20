@@ -124,6 +124,10 @@ namespace PongGame.GamePong
         /// <param name="gameTime">The game time</param>
         public override void Update(GameTime gameTime)
         {
+            if(! Map.Instance.IsServer)
+            {
+                return;
+            }
             Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;

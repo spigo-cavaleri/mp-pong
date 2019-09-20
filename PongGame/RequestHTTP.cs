@@ -11,7 +11,7 @@ namespace PongGame
 {
     static class RequestHTTP
     {
-        private static string baseUrl = "http://10.131.69.120:49823/";
+        private static string baseUrl = "http://10.131.67.38:49823/";
 
         public static LoginResponseMessage CreateAccount(string name, string password)
         {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using PongGame.Tcp;
+using PongGame.GamePong;
 
 namespace PongGame
 {
@@ -42,7 +43,13 @@ namespace PongGame
 
         public void Update(GameTime gameTime)
         {
-
+            if (Map.Instance.IsServer)
+            {
+                if (GameServer.Instance.GetGameClients().Length > 0)
+                {
+                    Game1.Instance.GameState = GameState.Playing;
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -63,7 +70,7 @@ namespace PongGame
                 ServerConfirmation sRespone = RequestHTTP.HostServer(GameServer.Instance.LocalEndPoint.Address.ToString(), GameServer.Instance.LocalEndPoint.Port.ToString());
                 if (sRespone.ServerSuccess)
                 {
-                    Game1.Instance.GameState = GameState.Playing;
+                    Map.Instance.SetupAsServer();
                 }
                 else
                 {
@@ -72,13 +79,10 @@ namespace PongGame
             }
             else if (!lrm.ShouldHostServer)
             {
-                string iP = lrm.GameServerIP;
+                string ip = lrm.GameServerIP;
                 string port = lrm.GameServerPort;
 
-                GameClient gClient = new GameClient(iP, (ushort)Convert.ToInt32(port));
-
-                //JegSkalConnecteTiliPport
-                Game1.Instance.GameState = GameState.Playing;
+                Map.Instance.SetupAsClient(ip, port);
             }
 
         }
