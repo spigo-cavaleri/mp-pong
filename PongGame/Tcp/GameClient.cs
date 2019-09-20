@@ -156,7 +156,7 @@ namespace PongGame.Tcp
                 return packets.ToArray();
             }
 
-            return null;
+            return new ConcurrentBag<TcpDataPacket>().ToArray();
         }
 
         /// <summary>

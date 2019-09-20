@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using PongGame.Tcp;
+using System;
+using System.Collections.Generic;
 
 namespace PongGame.GamePong
 {
@@ -14,6 +15,11 @@ namespace PongGame.GamePong
         /// </summary>
         public const int PadOffSetFromEgde = 50;
         #endregion
+
+        public bool IsServer
+        {
+            get => this.isServer;
+        }
 
         #region SINGLETON
         /// <summary>
@@ -77,13 +83,16 @@ namespace PongGame.GamePong
 
         private ContentManager content;
         private GraphicsDevice graphics;
+
+        private GameClient gameClient;
+        private bool isServer = false;
         #endregion
 
         #region CONSTRUCTERS
         /// <summary>
         /// Constucts a map where the players can play Pong
         /// </summary>
-        public Map()
+        private Map()
         {
             content = Game1.Instance.Content;
             graphics = Game1.Instance.GraphicsDevice;
@@ -104,11 +113,7 @@ namespace PongGame.GamePong
 
             collisionManager = CollisionManager.Instance;
 
-            InitPlayers();
             InitBall();
-
-            PlayerOneName = "Niki";
-            PlayerTwoName = "NotNiki";
         }
 
         /// <summary>
@@ -117,17 +122,58 @@ namespace PongGame.GamePong
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-            if (GameObjects != null)
+            if(!this.isServer)
             {
-                if (!(string.IsNullOrEmpty(PlayerOneName) && string.IsNullOrEmpty(PlayerTwoName)))
+                // Receive
+                Data.TcpDataPacket[] data = gameClient.GetDataToReceive();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    string received = data[i].Data;
+                    string[] split = received.Split(':');
+                    float receivedOtherY = (int)Convert.ToDecimal(split[0]);
+                    float receivedMeY = (int)Convert.ToDecimal(split[0]);
+                    float receivedBallX = (int)Convert.ToDecimal(split[1]);
+                    float receivedBallY = (int)Convert.ToDecimal(split[2]);
+
+                    player1Pad.Position = new Vector2(player1Pad.Position.X, receivedOtherY);
+                    player2Pad.Position = new Vector2(player2Pad.Position.X, receivedMeY);
+                    ball.Position = new Vector2(receivedBallX, receivedBallY);
+                }
+
+                // Game Logic
+                MPKeyPress intent = player2Pad.ClientIntent();
+
+                // Send
+                string min = "intent:" + (int)intent;
+                gameClient.SetDataToSend(min);
+            }
+            else
+            {
+                // Receive
+                Data.TcpDataPacket[] data = GameServer.Instance.GetDataToReceive();
+                for (int i = 0; i < data.Length; i++)
+                {
+                    string received = data[i].Data;
+                    string[] split = received.Split(':');
+                    MPKeyPress intent = (MPKeyPress) Convert.ToInt32(split[1]);
+
+                    player2Pad.HandleClientIntent(gameTime, intent);
+                }
+
+                // Game Logic
+                if (GameObjects != null)
                 {
                     for (int i = 0; i < GameObjects.Count; i++)
                     {
                         GameObjects[i].Update(gameTime);
                     }
+
+                    collisionManager.Update(gameTime);
                 }
 
-                collisionManager.Update(gameTime);
+                // Send
+                string min = player1Pad.Position.Y + ":" + player2Pad.Position.Y + ":" + ball.Position.X + ":" + ball.Position.Y;
+                GameServer.Instance.BroadCast(min);
             }
         }
 
@@ -147,6 +193,40 @@ namespace PongGame.GamePong
                 GameObjects[i].Draw(spriteBatch);
             }
         }
+
+        public void SetupAsServer()
+        {
+            // HACKY WACKY SOLUTION HVIS IKKE VI DOTTER IND PÅ EXCEPTION :(
+            // GameServer.Instance.GetType();
+
+            GameServer.Instance.GameServerException += Instance_GameServerException;
+
+            this.isServer = true;
+            InitPlayers();
+        }
+
+        public void SetupAsClient(string ip, string port)
+        {
+            this.isServer = false;
+            this.gameClient = new GameClient(ip, (ushort)Convert.ToInt32(port));
+
+            Game1.Instance.GameState = GameState.Playing;
+
+            gameClient.GameClientException += GameClient_GameClientException;
+
+            InitPlayers();
+        }
+
+        private void GameClient_GameClientException(string exceptionMessage)
+        {
+            throw new Exception(exceptionMessage);
+        }
+
+        private void Instance_GameServerException(string exceptionMessage)
+        {
+            throw new Exception(exceptionMessage);
+        }
+
         #endregion
 
         #region PRIVATE FUNCTIONS
@@ -188,12 +268,12 @@ namespace PongGame.GamePong
             int p1Width = PadOffSetFromEgde;
             int p1Heigth = (graphics.Viewport.Height / 2) - (player1PadSprite.Height / 2);
             Vector2 startPositionPlayerOne = new Vector2(p1Width, p1Heigth);
-            player1Pad = new Pad(player1PadSprite, startPositionPlayerOne, PlayerOneName);
+            player1Pad = new Pad(player1PadSprite, startPositionPlayerOne, PlayerOneName, this.isServer);
 
             int p2Width = graphics.Viewport.Width - player2PadSprite.Width - PadOffSetFromEgde;
             int p2Height = (graphics.Viewport.Height / 2) - (player1PadSprite.Height / 2);
             Vector2 startPositionPlayerTwo = new Vector2(p2Width, p2Height);
-            player2Pad = new Pad(player2PadSprite, startPositionPlayerTwo, PlayerTwoName);
+            player2Pad = new Pad(player2PadSprite, startPositionPlayerTwo, PlayerTwoName, !this.isServer);
 
             GameObjects.Add(player1Pad);
             GameObjects.Add(player2Pad);

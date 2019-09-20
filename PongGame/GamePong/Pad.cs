@@ -17,14 +17,6 @@ namespace PongGame.GamePong
     public class Pad : GameObject
     {
         #region PUBLIC PROPERTIES
-        /// <summary>
-        /// true if this pad is running on the server, false otherwise 
-        /// </summary>
-        public bool IsServer
-        {
-            get;
-            set;
-        } = true;
 
         /// <summary>
         /// The mulitplayer key press to send over the network
@@ -52,6 +44,8 @@ namespace PongGame.GamePong
         public string Name;
         #endregion
 
+        private bool controllable;
+
         #region CONSTRUCTERS
         /// <summary>
         /// Construct a pad
@@ -59,11 +53,12 @@ namespace PongGame.GamePong
         /// <param name="sprite">The sprite used for the pad</param>
         /// <param name="position">The position of the pad</param>
         /// <param name="name">the name of the pad</param>
-        public Pad(Texture2D sprite, Vector2 position, string name) : base(sprite, position)
+        public Pad(Texture2D sprite, Vector2 position, string name, bool controllable) : base(sprite, position)
         {
             Name = name;
             Sprite = sprite;
             Position = position;
+            this.controllable = controllable;
         }
         #endregion
 
@@ -74,7 +69,7 @@ namespace PongGame.GamePong
         /// <param name="gameTime">the game time</param>
         public override void Update(GameTime gameTime)
         {
-            if (IsServer)
+            if (this.controllable)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up) && Position.Y > 0)
                 {
@@ -90,6 +85,46 @@ namespace PongGame.GamePong
             {
                 Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
+        }
+
+        public void HandleClientIntent(GameTime gameTime, MPKeyPress intent)
+        {
+            switch (intent)
+            {
+                case MPKeyPress.None:
+                    break;
+
+                case MPKeyPress.Up:
+
+                    if (Position.Y > 0)
+                    {
+                        Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                    break;
+
+                case MPKeyPress.Down:
+
+                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                    {
+                        Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
+                    }
+                    break;
+            }
+        }
+
+        public MPKeyPress ClientIntent()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                return MPKeyPress.Up;
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                return MPKeyPress.Down;
+            }
+
+            return MPKeyPress.None;
         }
         #endregion
 
