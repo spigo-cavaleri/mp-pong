@@ -175,7 +175,11 @@ namespace PongGame.GamePong
                 }
 
                 // Send
-                string min = Math.Round(player1Pad.Position.Y) + ":" + Math.Round(player2Pad.Position.Y) + ":" + Math.Round(ball.Position.X) + ":" + Math.Round(ball.Position.Y);
+                int playerMeY = (int)Math.Round(player1Pad.Position.Y);
+                int playerOtherY = (int)Math.Round(player2Pad.Position.Y);
+                int ballX = (int)Math.Round(ball.Position.X);
+                int ballY = (int)Math.Round(ball.Position.Y);
+                string min = playerMeY + ":" + playerOtherY + ":" + ballX + ":" + ballY;
                 GameServer.Instance.BroadCast(min);
             }
         }
