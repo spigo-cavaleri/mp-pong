@@ -126,9 +126,12 @@ namespace PongGame.GamePong
             {
                 // Receive
                 Data.TcpDataPacket[] data = gameClient.GetDataToReceive();
-                for (int i = 0; i < data.Length; i++)
+                //for (int i = 0; i < data.Length; i++)
+                //{
+                // Tager kun sidste modtagne pakke :)
+                if(data.Length > 0)
                 {
-                    string received = data[i].Data;
+                    string received = data[data.Length -1].Data;
                     string[] split = received.Split(':');
                     float receivedOtherY = (int)Convert.ToInt32(split[0]);
                     float receivedMeY = (int)Convert.ToInt32(split[1]);
