@@ -1,14 +1,14 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PongGame.Tcp;
-using PongGame.GamePong;
+﻿using System;
 
-namespace PongGame
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+using PongGame.Network;
+using PongGame.Network.JSONMessages;
+using PongGame.Network.Tcp;
+
+
+namespace PongGame.MPPongGame.GameLobby
 {
     class LobbyScreen
     {

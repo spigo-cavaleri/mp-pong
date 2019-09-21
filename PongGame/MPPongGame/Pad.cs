@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     /// <summary>
     /// Multiplayer key press to control the pad

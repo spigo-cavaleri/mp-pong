@@ -1,4 +1,6 @@
-﻿namespace PongGame.Tcp.Data
+﻿using PongGame.Network.Tcp;
+
+namespace PongGame.Network.Tcp.Data
 {
     public struct TcpDataPacket
     {

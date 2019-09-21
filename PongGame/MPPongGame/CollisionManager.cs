@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     public class CollisionManager
     {

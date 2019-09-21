@@ -5,10 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-using PongGame.Tcp;
-using PongGame.Tcp.Data;
+using PongGame.Network.Tcp;
+using PongGame.Network.Tcp.Data;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     public class Map
     {

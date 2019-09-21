@@ -2,7 +2,7 @@
 using System.Runtime.Serialization.Json;
 using System.Text;
 
-namespace PongGame.Tcp.JSONGeneric
+namespace PongGame.Network.JSONGeneric
 {
     /// <summary>
     /// Generic json serializer that can distinguish between types of objects that has been serialized before deserializetion
@@ -10,6 +10,7 @@ namespace PongGame.Tcp.JSONGeneric
     /// </summary>
     public static class JSONSerializer
     {
+        #region PUBLIC FUNCTIONS
         /// <summary>
         /// Serializes a data packet into a string using encoding ASCII
         /// </summary>
@@ -89,7 +90,9 @@ namespace PongGame.Tcp.JSONGeneric
 
             return false;
         }
+        #endregion
 
+        #region PRIVATE FUNCTIONS
         /// <summary>
         /// Splits the data from the serializetion into a type and data to deserialize
         /// </summary>
@@ -157,5 +160,6 @@ namespace PongGame.Tcp.JSONGeneric
 
             return false;
         }
+        #endregion
     }
 }

@@ -1,13 +1,13 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 
-using PongGame.Tcp.Data;
-using PongGame.Tcp.JSONGeneric;
+using PongGame.Network.JSONGeneric;
+using PongGame.Network.Tcp.Data;
 
-namespace PongGame.Tcp
+namespace PongGame.Network.Tcp
 {
     /// <summary>
     /// A game server that can send and receive from a game client the server uses Tcp Protocol. 
@@ -100,6 +100,8 @@ namespace PongGame.Tcp
                     IsBackground = false
                 };
 
+                Console.WriteLine("Server constructed");
+
                 Start(serverThread);
 
             }
@@ -164,8 +166,7 @@ namespace PongGame.Tcp
         {
             if (gameClients != null)
             {
-                // Tries the serialize the data packet into a string and sends it to the tcp client
-                if (JSONSerializer.SerializeData(dataPacket, out string data, Encoding.ASCII))
+                if (JSONSerializer.SerializeData(dataPacket, out string data))
                 {
                     // enqueues a Tcp packet for each client in the current client list
                     foreach (GameClient client in gameClients)
@@ -179,14 +180,12 @@ namespace PongGame.Tcp
         /// <summary>
         /// Sends data to a specific client via the tcp data packet
         /// </summary>
-        /// <param name="client">The client to send to</param>
-        /// <param name="datapacket">The data packet to send</param>
+        /// <param name="data"></param>
         public void SendToClient<T>(GameClient client, T dataPacket)
         {
-            if (JSONSerializer.SerializeData(dataPacket, out string data, Encoding.ASCII))
+            if (client != null && JSONSerializer.SerializeData(dataPacket, out string data))
             {
                 TcpDataPacket packet = new TcpDataPacket(client, data);
-
                 // Enqueue the data to send to client in the servers tcp packet queue
                 packetsToSend.Enqueue(packet);
             }
@@ -195,7 +194,8 @@ namespace PongGame.Tcp
         /// <summary>
         /// Gets the data that is received by the server
         /// </summary>
-        /// <returns>Returns an array of Tcp packets if any, otherwise returns null</returns>
+        /// <typeparam name="T">The type of object expected to receive</typeparam>
+        /// <returns>Returns an array of Tcp packets if any, otherwise returns empty</returns>
         public T[] GetDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get
@@ -259,10 +259,6 @@ namespace PongGame.Tcp
                 {
                     GameServerException(string.Format("Server Socket exception: {0}", e));
                 }
-            }
-            finally
-            {
-                TcpListener.Stop();
             }
         }
 

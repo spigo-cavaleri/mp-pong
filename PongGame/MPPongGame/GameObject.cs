@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     /// <summary>
     /// The base class for all game objects in the game

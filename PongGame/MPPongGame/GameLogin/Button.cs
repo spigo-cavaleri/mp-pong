@@ -1,15 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PongGame
+namespace PongGame.MPPongGame.GameLogin
 {
     public delegate void OnClickEventHandler();
-    class Button
+    public class Button
     {
         private Texture2D sprite;
         private Vector2 position;
