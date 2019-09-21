@@ -6,17 +6,28 @@ namespace PongGame.Tcp.JSONGeneric
 {
     /// <summary>
     /// Generic json serializer that can distinguish between types of objects that has been serialized before deserializetion
+    /// DOES NOT SUPPORT POLYMORPHISM YET !!! 
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public static class JSONSerializer
     {
         /// <summary>
-        /// Seirializes the object to a string with the chocen encoding type
+        /// Serializes a data packet into a string using encoding ASCII
+        /// </summary>
+        /// <typeparam name="T">The type of object to serialize</typeparam>
+        /// <param name="dataPacketToSerialize">The object to serialize</param>
+        /// <param name="data">The serialized data as a string</param>
+        /// <returns>True if the serialization is succefull, false otherwise</returns>
+        public static bool SerializeData<T>(T dataPacketToSerialize, out string data)
+        {
+            return SerializeData(dataPacketToSerialize, out data, Encoding.ASCII);
+        }
+
+        /// <summary>
+        /// Seirializes the object to a string using ASCII encoding
         /// </summary>
         /// <typeparam name="T">The type of object to serialize</typeparam>
         /// <param name="dataPacketToSerialize">The object to serialize</param>
         /// <param name="data">The serialize data in string form</param>
-        /// <param name="encoding">The Encoding that is used</param>
         /// <returns>True if the serializetion is successful, false otherwise</returns>
         public static bool SerializeData<T>(T dataPacketToSerialize, out string data, Encoding encoding)
         {
@@ -50,7 +61,7 @@ namespace PongGame.Tcp.JSONGeneric
         }
 
         /// <summary>
-        /// Deserializes the string data to the type of T object
+        /// Deserializes the string data back into the object
         /// </summary>
         /// <typeparam name="T">The type of object to deserialize to</typeparam>
         /// <param name="data">The data to deserialize</param>
@@ -123,7 +134,13 @@ namespace PongGame.Tcp.JSONGeneric
             return false;
         }
 
-        public static bool GetEncoding(string encodingTypeName, out Encoding encoding)
+        /// <summary>
+        /// Get the encoding from its name
+        /// </summary>
+        /// <param name="encodingName">The name of the encoding</param>
+        /// <param name="encoding">The encoding that matches the name param</param>
+        /// <returns>True if the encoding is found in the encoding info list, false otherwise</returns>
+        private static bool GetEncoding(string encodingName, out Encoding encoding)
         {
             encoding = null;
 
@@ -131,7 +148,7 @@ namespace PongGame.Tcp.JSONGeneric
 
             for (int i = 0; i < encodingInfo.Length; i++)
             {
-                if (encodingInfo[i].DisplayName == encodingTypeName)
+                if (encodingInfo[i].DisplayName == encodingName)
                 {
                     encoding = Encoding.GetEncoding(encodingInfo[i].Name);
                     return true;
