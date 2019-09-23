@@ -69,6 +69,7 @@ namespace PongGame.MPPongGame.GameLogin
 
                 Game1.Instance.GameState = GameState.WaitingForPlayer;
                 LobbyScreen.Instance.ParseLoginRespone(lResponse);
+                Map.Instance.MyUsername = username;
             });
             createButton.SetButtonDelegate(() => {
                 string username = usernameInput.InputText;
@@ -77,6 +78,7 @@ namespace PongGame.MPPongGame.GameLogin
                 // RequestHTTP.CreateAccount(username, password);
                 Game1.Instance.GameState = GameState.WaitingForPlayer;
                 LobbyScreen.Instance.ParseLoginRespone(cResponse);
+                Map.Instance.MyUsername = username;
             });
         }
 

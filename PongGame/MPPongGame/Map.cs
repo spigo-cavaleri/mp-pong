@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using PongGame.Network;
 using PongGame.Network.Tcp;
 using PongGame.Network.Tcp.Data;
 
@@ -19,9 +19,29 @@ namespace PongGame.MPPongGame
         public const int PadOffSetFromEgde = 50;
         #endregion
 
+        public SpriteFont GameFont
+        {
+            get => this.gameFont;
+        }
+
         public bool IsServer
         {
             get => this.isServer;
+        }
+
+        public Pad Player1Pad
+        {
+            get => this.player1Pad;
+        }
+
+        public Pad Player2Pad
+        {
+            get => this.player2Pad;
+        }
+
+        public Ball Ball
+        {
+            get => this.ball;
         }
 
         #region SINGLETON
@@ -60,6 +80,10 @@ namespace PongGame.MPPongGame
         /// </summary>
         public string PlayerTwoName = null;
 
+        public string MyUsername = "";
+
+        public bool GameOver = false;
+
         /// <summary>
         /// List of active game objects on the map
         /// </summary>
@@ -71,6 +95,8 @@ namespace PongGame.MPPongGame
         private Texture2D ballSprite;
         private Texture2D player1PadSprite;
         private Texture2D player2PadSprite;
+
+        private SpriteFont gameFont;
 
         private Wall topWall;
         private Wall buttomWall;
@@ -113,6 +139,8 @@ namespace PongGame.MPPongGame
             ballSprite = content.Load<Texture2D>("pokeBall");
             player1PadSprite = content.Load<Texture2D>("pipe");
             player2PadSprite = content.Load<Texture2D>("pipe");
+
+            gameFont = content.Load<SpriteFont>("InputFont");
 
             collisionManager = CollisionManager.Instance;
 
@@ -276,7 +304,7 @@ namespace PongGame.MPPongGame
             int ballX = (int)Math.Round(ball.Position.X);
             int ballY = (int)Math.Round(ball.Position.Y);
 
-            ClientUpdateDataPacket clientUpdateDP = new ClientUpdateDataPacket(playerMeY, playerOtherY, ballX, ballY);
+            ClientUpdateDataPacket clientUpdateDP = new ClientUpdateDataPacket(playerMeY, playerOtherY, ballX, ballY, Player1Pad.CurrentPoints, Player1Pad.HealthPoints, Player2Pad.CurrentPoints, Player2Pad.HealthPoints);
             GameServer.Instance.BroadCast(clientUpdateDP);
         }
 
@@ -295,6 +323,15 @@ namespace PongGame.MPPongGame
                 player1Pad.Position = new Vector2(player1Pad.Position.X, cUPD.SPPositionY);
                 player2Pad.Position = new Vector2(player2Pad.Position.X, cUPD.CPPositionY);
                 ball.Position = new Vector2(cUPD.BallPositionX, cUPD.BallPositionY);
+
+                player1Pad.ClientUpdateStatsFromServer(cUPD.SPoints, cUPD.SHealth);
+                player2Pad.ClientUpdateStatsFromServer(cUPD.CPoints, cUPD.CHealth);
+
+                if(player1Pad.HealthPoints <= 0)
+                {
+                    // Other player (the server player) lost! I won yay
+                    RequestHTTP.SendHighscore(MyUsername, player2Pad.CurrentPoints);
+                }
             }
 
             // Game Logic
