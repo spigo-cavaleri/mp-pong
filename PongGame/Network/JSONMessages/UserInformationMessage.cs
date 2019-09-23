@@ -31,11 +31,17 @@ namespace PongGame.Network.JSONMessages
 
         #region PRIVATE FIELDS
         [DataMember]
-        private string username;
+        private string userName;
 
         [DataMember]
         private string password;
         #endregion
+
+        public UserInformationMessage(string userName, string password)
+        {
+            this.userName = userName;
+            this.password = password;
+        }
 
         #region PUBLIC FUNCTIONS
         public override string ToString()
