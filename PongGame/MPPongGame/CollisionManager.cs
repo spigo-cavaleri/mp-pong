@@ -100,6 +100,16 @@ namespace PongGame.MPPongGame
             if (ball.IsColliding(pad))
             {
                 ball.Direction.X *= INVERT;
+
+                // Wonky collision fix
+                if (ball.Position.X > pad.Position.X)
+                {
+                    ball.Position.X += ball.Position.X - pad.Position.X;
+                }
+                else
+                {
+                    ball.Position.X += ball.Position.X - (pad.Position.X - pad.Sprite.Width);
+                }
                 ball.PointUpdater();
             }
         }
