@@ -1,16 +1,20 @@
-﻿using PongGame.MPPongGame;
+﻿using System.Runtime.Serialization;
+
+using PongGame.MPPongGame;
 
 namespace PongGame.Network.Tcp.Data
 {
     /// <summary>
     /// A data packet for the server to update the client players position
     /// </summary>
+    [DataContract]
     public struct ServerUpdateDataPacket
     {
         #region PUBLIC FIELDS
         /// <summary>
         /// The movement intent of the client player
         /// </summary>
+        [DataMember]
         public readonly MPKeyPress MPKeyPress;
         #endregion
 
