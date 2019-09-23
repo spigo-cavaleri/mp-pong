@@ -76,7 +76,7 @@ namespace PongGame.MPPongGame
                     Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - base.Sprite.Height)
                 {
                     Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
@@ -104,7 +104,7 @@ namespace PongGame.MPPongGame
 
                 case MPKeyPress.Down:
 
-                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - base.Sprite.Height)
                     {
                         Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                     }
