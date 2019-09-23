@@ -11,38 +11,49 @@ namespace PongGame
 {
     static class RequestHTTP
     {
-        private static string baseUrl = "http://10.131.69.120:49823/";
+        private static string baseUrl = "http://localhost:49823/";
 
-        public static LoginResponseMessage CreateAccount(string name, string password)
+        private static WebResponse SendNRecieve(string where, string what)
         {
-            WebRequest request = WebRequest.Create(baseUrl + "api/createuser");
-            //request.Credentials = CredentialCache.DefaultCredentials;
+            WebRequest request = WebRequest.Create(baseUrl + where);
             request.Method = "POST";
 
-            UserInformationMessage uIF = new UserInformationMessage();
-
-            uIF.Username = name;
-            uIF.Password = password;
-
-            MemoryStream mStream = new MemoryStream();
-            DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
-
-            dJsonSerializer.WriteObject(mStream, uIF);
-
-            mStream.Position = 0;
-            StreamReader sReader = new StreamReader(mStream);
-
-            string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(what);
             request.ContentLength = msgToSend.Length;
             request.ContentType = "application/json";
             Stream dataStream = request.GetRequestStream();
             dataStream.Write(msgToSend, 0, msgToSend.Length);
             dataStream.Close();
 
-            WebResponse response = request.GetResponse();
+            return request.GetResponse();
+        }
 
-            using (dataStream = response.GetResponseStream())
+        public static string Ser<T>(T minType)
+        {
+            MemoryStream mStream = new MemoryStream();
+            DataContractJsonSerializer dJsonSer = new DataContractJsonSerializer(typeof(T));
+
+            dJsonSer.WriteObject(mStream, minType);
+
+            mStream.Position = 0;
+            StreamReader sReader = new StreamReader(mStream);
+            string requestString = sReader.ReadToEnd();
+
+            return requestString;
+        }
+
+        public static LoginResponseMessage CreateAccount(string name, string password)
+        {   
+            UserInformationMessage uIF = new UserInformationMessage();
+
+            uIF.Username = name;
+            uIF.Password = password;
+
+            string requestString = Ser<UserInformationMessage>(uIF);
+
+            WebResponse response = SendNRecieve("api/createuser", requestString);
+
+            using (Stream dataStream = response.GetResponseStream())
             {
                 DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
                 LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(dataStream);
@@ -106,34 +117,38 @@ namespace PongGame
 
         public static LoginResponseMessage LogInToAccount(string name, string password)
         {
-            WebRequest request = WebRequest.Create(baseUrl + "api/login");
-            //request.Credentials = CredentialCache.DefaultCredentials;
-            request.Method = "POST";
+            //WebRequest request = WebRequest.Create(baseUrl + "api/login");
+            ////request.Credentials = CredentialCache.DefaultCredentials;
+            //request.Method = "POST";
 
             UserInformationMessage uIF = new UserInformationMessage();
 
             uIF.Username = name;
             uIF.Password = password;
 
-            MemoryStream mStream = new MemoryStream();
-            DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
+            //MemoryStream mStream = new MemoryStream();
+            //DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(UserInformationMessage));
 
-            dJsonSerializer.WriteObject(mStream, uIF);
+            //dJsonSerializer.WriteObject(mStream, uIF);
 
-            mStream.Position = 0;
-            StreamReader sReader = new StreamReader(mStream);
+            //mStream.Position = 0;
+            //StreamReader sReader = new StreamReader(mStream);
 
-            string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
-            request.ContentLength = msgToSend.Length;
-            request.ContentType = "application/json";
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(msgToSend, 0, msgToSend.Length);
-            dataStream.Close();
+            //string requestString = sReader.ReadToEnd();
+            //byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+            //request.ContentLength = msgToSend.Length;
+            //request.ContentType = "application/json";
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(msgToSend, 0, msgToSend.Length);
+            //dataStream.Close();
 
-            WebResponse response = request.GetResponse();
+            string requestString = Ser<UserInformationMessage>(uIF);
 
-            using (dataStream = response.GetResponseStream())
+
+
+            WebResponse response = SendNRecieve("api/login", requestString);
+
+            using (Stream dataStream = response.GetResponseStream())
             {
                 DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(LoginResponseMessage));
                 LoginResponseMessage lRM = (LoginResponseMessage)lRMSer.ReadObject(dataStream);
@@ -148,31 +163,33 @@ namespace PongGame
         
         public static ServerConfirmation HostServer(string IP, string Port)
         {
-            WebRequest request = WebRequest.Create(baseUrl + "api/serverhost");
-            //request.Credentials = CredentialCache.DefaultCredentials;
-            request.Method = "POST";
+            //WebRequest request = WebRequest.Create(baseUrl + "api/serverhost");
+            ////request.Credentials = CredentialCache.DefaultCredentials;
+            //request.Method = "POST";
 
             CreateServerInformationMessage cServer = new CreateServerInformationMessage(IP, Port);
 
-            MemoryStream mStream = new MemoryStream();
-            DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(CreateServerInformationMessage));
+            //MemoryStream mStream = new MemoryStream();
+            //DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(CreateServerInformationMessage));
 
-            dJsonSerializer.WriteObject(mStream, cServer);
+            //dJsonSerializer.WriteObject(mStream, cServer);
 
-            mStream.Position = 0;
-            StreamReader sReader = new StreamReader(mStream);
+            //mStream.Position = 0;
+            //StreamReader sReader = new StreamReader(mStream);
 
-            string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
-            request.ContentLength = msgToSend.Length;
-            request.ContentType = "application/json";
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(msgToSend, 0, msgToSend.Length);
-            dataStream.Close();
+            //string requestString = sReader.ReadToEnd();
+            //byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+            //request.ContentLength = msgToSend.Length;
+            //request.ContentType = "application/json";
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(msgToSend, 0, msgToSend.Length);
+            //dataStream.Close();
 
-            WebResponse response = request.GetResponse();
+            string requestString = Ser<CreateServerInformationMessage>(cServer);
 
-            using (dataStream = response.GetResponseStream())
+            WebResponse response = SendNRecieve("api/serverhost", requestString);
+
+            using (Stream dataStream = response.GetResponseStream())
             {
                 DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(ServerConfirmation));
                 ServerConfirmation lRM = (ServerConfirmation)lRMSer.ReadObject(dataStream);
@@ -182,31 +199,33 @@ namespace PongGame
 
         public static ServerConfirmation SendHighscore(string name, int score)
         {
-            WebRequest request = WebRequest.Create(baseUrl + "api/submithighscore");
-            //request.Credentials = CredentialCache.DefaultCredentials;
-            request.Method = "POST";
+            //WebRequest request = WebRequest.Create(baseUrl + "api/submithighscore");
+            ////request.Credentials = CredentialCache.DefaultCredentials;
+            //request.Method = "POST";
 
             SavedHighscore sHS = new SavedHighscore(name, score);
 
-            MemoryStream mStream = new MemoryStream();
-            DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(SavedHighscore));
+            //MemoryStream mStream = new MemoryStream();
+            //DataContractJsonSerializer dJsonSerializer = new DataContractJsonSerializer(typeof(SavedHighscore));
 
-            dJsonSerializer.WriteObject(mStream, sHS);
+            //dJsonSerializer.WriteObject(mStream, sHS);
 
-            mStream.Position = 0;
-            StreamReader sReader = new StreamReader(mStream);
+            //mStream.Position = 0;
+            //StreamReader sReader = new StreamReader(mStream);
 
-            string requestString = sReader.ReadToEnd();
-            byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
-            request.ContentLength = msgToSend.Length;
-            request.ContentType = "application/json";
-            Stream dataStream = request.GetRequestStream();
-            dataStream.Write(msgToSend, 0, msgToSend.Length);
-            dataStream.Close();
+            //string requestString = sReader.ReadToEnd();
+            //byte[] msgToSend = System.Text.Encoding.UTF8.GetBytes(requestString);
+            //request.ContentLength = msgToSend.Length;
+            //request.ContentType = "application/json";
+            //Stream dataStream = request.GetRequestStream();
+            //dataStream.Write(msgToSend, 0, msgToSend.Length);
+            //dataStream.Close();
 
-            WebResponse response = request.GetResponse();
+            string requestString = Ser<SavedHighscore>(sHS);
 
-            using (dataStream = response.GetResponseStream())
+            WebResponse response = SendNRecieve("api/submithighscore", requestString);
+
+            using (Stream dataStream = response.GetResponseStream())
             {
                 DataContractJsonSerializer lRMSer = new DataContractJsonSerializer(typeof(ServerConfirmation));
                 ServerConfirmation lRM = (ServerConfirmation)lRMSer.ReadObject(dataStream);
