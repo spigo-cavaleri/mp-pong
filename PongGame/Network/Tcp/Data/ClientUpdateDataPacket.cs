@@ -32,6 +32,18 @@ namespace PongGame.Network.Tcp.Data
         /// </summary>
         [DataMember]
         public readonly int BallPositionY;
+
+        [DataMember]
+        public readonly int SPoints;
+
+        [DataMember]
+        public readonly int SHealth;
+
+        [DataMember]
+        public readonly int CPoints;
+
+        [DataMember]
+        public readonly int CHealth;
         #endregion
 
         #region CONSTUCTERS
@@ -42,12 +54,17 @@ namespace PongGame.Network.Tcp.Data
         /// <param name="cPPositionY">Client player position on the Y-axis</param>
         /// <param name="bPositionX">Ball position on the X-axis</param>
         /// <param name="bPositionY">Ball position on the Y-axis</param>
-        public ClientUpdateDataPacket(int sPPositionY, int cPPositionY, int bPositionX, int bPositionY)
+        public ClientUpdateDataPacket(int sPPositionY, int cPPositionY, int bPositionX, int bPositionY, int SPoints, int SHealth, int CPoints, int CHealth)
         {
             SPPositionY = sPPositionY;
             CPPositionY = cPPositionY;
             BallPositionX = bPositionX;
             BallPositionY = bPositionY;
+
+            this.SPoints = SPoints;
+            this.SHealth = SHealth;
+            this.CPoints = CPoints;
+            this.CHealth = CHealth;
         }
         #endregion
     }

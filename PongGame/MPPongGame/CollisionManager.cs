@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
+using PongGame.Network;
 
 namespace PongGame.MPPongGame
 {
@@ -99,6 +100,17 @@ namespace PongGame.MPPongGame
             if (ball.IsColliding(pad))
             {
                 ball.Direction.X *= INVERT;
+
+                // Wonky collision fix
+                if (ball.Position.X > pad.Position.X)
+                {
+                    ball.Position.X += ball.Position.X - pad.Position.X;
+                }
+                else
+                {
+                    ball.Position.X += ball.Position.X - (pad.Position.X - pad.Sprite.Width);
+                }
+                ball.PointUpdater();
             }
         }
 
@@ -136,22 +148,34 @@ namespace PongGame.MPPongGame
 
         private void BallCollideWithLeftWall(Ball ball)
         {
-            if (HasScored != null)
-            {
-                HasScored(-1, "player1");
-            }
 
+            Map.Instance.Player1Pad.DeductHealth();
+            Map.Instance.Player2Pad.AddPoints(Map.Instance.Ball.PointCounter);
+
+            if (Map.Instance.Player1Pad.HealthPoints <= 0)
+            {
+                // Do nothing cause I (Server player) lost the game :(
+                Map.Instance.GameOver = true;
+            }
+            
             ball.Reset(ScoreSide.Left);
+            ball.PointResetter();
         }
 
         private void BallCollideWithRightWall(Ball ball)
         {
-            if (HasScored != null)
-            {
-                HasScored(-1, "player2");
-            }
+            Map.Instance.Player2Pad.DeductHealth();
+            Map.Instance.Player1Pad.AddPoints(Map.Instance.Ball.PointCounter);
 
+            if (Map.Instance.Player2Pad.HealthPoints <= 0)
+            {
+                // I (Server player) won and will submit highscore!
+                RequestHTTP.SendHighscore(Map.Instance.MyUsername, Map.Instance.Player1Pad.CurrentPoints);
+                Map.Instance.GameOver = true;
+            }
+            
             ball.Reset(ScoreSide.Right);
+            ball.PointResetter();
         }
         #endregion
     }

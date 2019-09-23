@@ -20,6 +20,11 @@ namespace PongGame.MPPongGame
     /// </summary>
     public class Ball : GameObject
     {
+        public int PointCounter
+        {
+            get => (int)Math.Floor(this.pointCounter);
+        }
+
         #region PUBLIC FIELDS
         /// <summary>
         /// Initial speed of the ball
@@ -48,6 +53,8 @@ namespace PongGame.MPPongGame
 
         private Vector2 startPosition;
         private Random rnd = new Random();
+
+        private float pointCounter;
         #endregion
 
         #region CONSTRUCTERS
@@ -56,6 +63,7 @@ namespace PongGame.MPPongGame
             Sprite = sprite;
             Position = startPosition = position;
             RandomDirection();
+            this.pointCounter = 0f;
         }
         #endregion
 
@@ -65,6 +73,7 @@ namespace PongGame.MPPongGame
         /// </summary>
         public void RandomDirection()
         {
+            this.pointCounter = 0f;
             if (rnd.Next(0, 100) >= 50)
             {
                 RandomDirectionRight();
@@ -124,7 +133,7 @@ namespace PongGame.MPPongGame
         /// <param name="gameTime">The game time</param>
         public override void Update(GameTime gameTime)
         {
-            if(! Map.Instance.IsServer)
+            if(! Map.Instance.IsServer || Map.Instance.GameOver)
             {
                 return;
             }
@@ -138,6 +147,17 @@ namespace PongGame.MPPongGame
                 speedIncreaseCounter = 0;
             }
         }
+
+        public void PointUpdater()
+        {
+            this.pointCounter += 50;
+        }
+
+        public void PointResetter()
+        {
+            this.pointCounter = 0f;
+        }
+
         #endregion
 
         #region PRIVATE FUNCTIONS

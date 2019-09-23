@@ -18,6 +18,16 @@ namespace PongGame.MPPongGame
     {
         #region PUBLIC PROPERTIES
 
+        public int HealthPoints
+        {
+            get => this.healthPoints;
+        }
+
+        public int CurrentPoints
+        {
+            get => this.currentPoints;
+        }
+
         /// <summary>
         /// The mulitplayer key press to send over the network
         /// </summary>
@@ -46,6 +56,9 @@ namespace PongGame.MPPongGame
 
         private bool controllable;
 
+        private int healthPoints;
+        private int currentPoints;
+
         #region CONSTRUCTERS
         /// <summary>
         /// Construct a pad
@@ -59,6 +72,8 @@ namespace PongGame.MPPongGame
             Sprite = sprite;
             Position = position;
             this.controllable = controllable;
+            this.healthPoints = 5;
+            this.currentPoints = 0;
         }
         #endregion
 
@@ -76,7 +91,7 @@ namespace PongGame.MPPongGame
                     Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - base.Sprite.Height)
                 {
                     Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
@@ -85,6 +100,18 @@ namespace PongGame.MPPongGame
             {
                 Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+
+            // Hacky wacky hardcoded position for text display (<_<)
+            Vector2 healthTextPosition = new Vector2((Position.X < 300) ? Position.X : Position.X - 70, 20);
+            Vector2 pointsTextPosition = new Vector2((Position.X < 300) ? Position.X : Position.X - 70, 60);
+
+            spriteBatch.DrawString(Map.Instance.GameFont, $"{healthPoints} life left", healthTextPosition, Color.White);
+            spriteBatch.DrawString(Map.Instance.GameFont, $"{currentPoints} points", pointsTextPosition, Color.White);
         }
 
         public void HandleClientIntent(GameTime gameTime, MPKeyPress intent)
@@ -104,12 +131,18 @@ namespace PongGame.MPPongGame
 
                 case MPKeyPress.Down:
 
-                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - base.Sprite.Height)
                     {
                         Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                     }
                     break;
             }
+        }
+
+        public void ClientUpdateStatsFromServer(int points, int health)
+        {
+            this.currentPoints = points;
+            this.healthPoints = health;
         }
 
         public MPKeyPress ClientIntent()
@@ -125,6 +158,16 @@ namespace PongGame.MPPongGame
             }
 
             return MPKeyPress.None;
+        }
+
+        public void AddPoints(int points)
+        {
+            this.currentPoints += points;
+        }
+
+        public void DeductHealth()
+        {
+            this.healthPoints -= 1;
         }
         #endregion
 
