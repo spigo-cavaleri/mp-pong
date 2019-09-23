@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Input;
 using PongGame.Network;
 using PongGame.Network.JSONMessages;
 using PongGame.MPPongGame.GameLobby;
+using System.Security.Cryptography;
+using CryptoLibrary;
 
 namespace PongGame.MPPongGame.GameLogin
 {
@@ -61,7 +63,7 @@ namespace PongGame.MPPongGame.GameLogin
             // Lambda metoder som kaldes, når knapperne trykkes på skal også initieres
             loginButton.SetButtonDelegate(() => {
                 string username = usernameInput.InputText;
-                string password = passwordInput.InputText;
+                string password = CryptoHelper.ComputeHash<SHA256Managed>(passwordInput.InputText);
                 LoginResponseMessage lResponse = RequestHTTP.LogInToAccount(username, password);
                 // RequestHTTP.LoginToAccount(username, password);
 
@@ -70,7 +72,7 @@ namespace PongGame.MPPongGame.GameLogin
             });
             createButton.SetButtonDelegate(() => {
                 string username = usernameInput.InputText;
-                string password = passwordInput.InputText;
+                string password = CryptoHelper.ComputeHash<SHA256Managed>(passwordInput.InputText);
                 LoginResponseMessage cResponse = RequestHTTP.CreateAccount(username, password);
                 // RequestHTTP.CreateAccount(username, password);
                 Game1.Instance.GameState = GameState.WaitingForPlayer;
