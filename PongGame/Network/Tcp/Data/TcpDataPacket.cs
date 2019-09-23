@@ -1,8 +1,7 @@
-﻿using PongGame.Tcp;
+﻿using PongGame.Network.Tcp;
 
-namespace PongGame.Data
+namespace PongGame.Network.Tcp.Data
 {
-
     public struct TcpDataPacket
     {
         public readonly string Data;

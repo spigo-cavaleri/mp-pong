@@ -2,7 +2,9 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using PongGame.GamePong;
+using PongGame.MPPongGame;
+using PongGame.MPPongGame.GameLobby;
+using PongGame.MPPongGame.GameLogin;
 
 namespace PongGame
 {

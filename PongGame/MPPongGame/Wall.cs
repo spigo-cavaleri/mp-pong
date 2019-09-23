@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     public class Wall : GameObject
     {
