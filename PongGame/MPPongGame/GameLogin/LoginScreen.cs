@@ -1,15 +1,14 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PongGame
+using PongGame.Network;
+using PongGame.Network.JSONMessages;
+using PongGame.MPPongGame.GameLobby;
+
+namespace PongGame.MPPongGame.GameLogin
 {
-    class LoginScreen
+    public class LoginScreen
     {
         public static LoginScreen Instance
         {

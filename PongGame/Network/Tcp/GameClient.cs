@@ -6,9 +6,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-using PongGame.Data;
+using PongGame.Network.JSONGeneric;
+using PongGame.Network.Tcp.Data;
 
-namespace PongGame.Tcp
+namespace PongGame.Network.Tcp
 {
     /// <summary>
     /// A game client used for multiplayer gaming, used with the game server.
@@ -110,23 +111,24 @@ namespace PongGame.Tcp
         }
 
         /// <summary>
-        /// Sends a data to the server
+        /// Sends object to the server, serializing it using json
         /// </summary>
-        /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        public void SetDataToSend(string data)
+        /// <typeparam name="T">The object type to send</typeparam>
+        /// <param name="dataPacket">The object to serialize and send to the server</param>
+        public void SetDataToSend<T>(T dataPacket)
         {
-            if (!string.IsNullOrEmpty(data))
+            if (JSONSerializer.SerializeData(dataPacket, out string data))
             {
-                SetDataToSend(new TcpDataPacket(this, data));
+                PacketsToSend.Enqueue(new TcpDataPacket(this, data));
             }
         }
 
         /// <summary>
-        /// Sends data to the server, 
-        /// controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
+        /// This is a server function and shouldn't be called anywhere else !!
+        /// Controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
         /// </summary>
         /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        public void SetDataToSend(TcpDataPacket data)
+        public void SetDataToSendServer(TcpDataPacket data)
         {
             if (PacketsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
             {
@@ -135,16 +137,43 @@ namespace PongGame.Tcp
         }
 
         /// <summary>
-        /// Returns an array of data packets that is received by this client
+        /// Receives the object sendt from the server
         /// </summary>
-        /// <returns>The data packets received from the server, null if the array is empty</returns>
-        public TcpDataPacket[] GetDataToReceive()
+        /// <typeparam name="T">The type of object expected to receice</typeparam>
+        /// <returns>An array of object matching the tyoe param, empty if no data is sendt</returns>
+        public T[] GetDataToReceive<T>()
         {
+            // Temporary bag for storing all the packets to get
+            ConcurrentBag<T> packets = new ConcurrentBag<T>();
+
             if (PacketsToReceive != null && PacketsToReceive.Count > 0)
             {
-                // Temporary bag for storing all the packets to get
-                ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
+                while (PacketsToReceive.Count > 0)
+                {
+                    if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
+                    {
+                        if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
+                        {
+                            packets.Add(dataPacket);
+                        }
+                    }
+                }
+            }
 
+            return packets.ToArray();
+        }
+
+        /// <summary>
+        /// Returns an array of data packets that is received by this client
+        /// </summary>
+        /// <returns>The data packets received from the server, an empty array if no data is to receive</returns>
+        public TcpDataPacket[] GetDataToReceiveServer()
+        {
+            // Temporary bag for storing all the packets to get
+            ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
+
+            if (PacketsToReceive != null && PacketsToReceive.Count > 0)
+            {
                 while (PacketsToReceive.Count > 0)
                 {
                     if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
@@ -152,11 +181,9 @@ namespace PongGame.Tcp
                         packets.Add(packet);
                     }
                 }
-
-                return packets.ToArray();
             }
 
-            return null;
+            return packets.ToArray();
         }
 
         /// <summary>
@@ -169,6 +196,10 @@ namespace PongGame.Tcp
             TcpClient.Close();
         }
 
+        /// <summary>
+        /// To string override.
+        /// </summary>
+        /// <returns>Returns the gameclients name and if it is running</returns>
         public override string ToString()
         {
             return string.Format("GameClient: {0}, is running {1}", Name, IsRunning);
@@ -178,6 +209,8 @@ namespace PongGame.Tcp
         #region PRIVATE FUNCTIONS
         private void ClientLoop()
         {
+            Console.WriteLine("Client loop");
+
             // initialize the queues use form data wrapping
             PacketsToReceive = new ConcurrentQueue<TcpDataPacket>();
             PacketsToSend = new ConcurrentQueue<TcpDataPacket>();
@@ -204,7 +237,6 @@ namespace PongGame.Tcp
                     // Sends all packets to the server
                     while (PacketsToSend.Count > 0)
                     {
-
                         if (PacketsToSend.TryDequeue(out TcpDataPacket nextPacketToSend))
                         {
                             writer.WriteLine(nextPacketToSend.Data);
@@ -238,7 +270,6 @@ namespace PongGame.Tcp
             {
                 reader.Dispose();
                 writer.Dispose();
-                TcpClient.Close();
                 CloseConnection();
             }
         }

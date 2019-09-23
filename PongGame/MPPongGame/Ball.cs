@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace PongGame.GamePong
+namespace PongGame.MPPongGame
 {
     /// <summary>
     /// The score side to choose ball direction after reset
@@ -124,6 +124,10 @@ namespace PongGame.GamePong
         /// <param name="gameTime">The game time</param>
         public override void Update(GameTime gameTime)
         {
+            if(! Map.Instance.IsServer)
+            {
+                return;
+            }
             Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
 
             speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;

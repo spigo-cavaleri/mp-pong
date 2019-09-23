@@ -2,7 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace PongGame.Tcp
+namespace PongGame.Network
 {
     /// <summary>
     /// Usefull Wan utilities
