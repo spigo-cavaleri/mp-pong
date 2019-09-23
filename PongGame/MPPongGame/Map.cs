@@ -293,7 +293,7 @@ namespace PongGame.MPPongGame
                 ClientUpdateDataPacket cUPD = cUpdateDPs[cUpdateDPs.Length - 1];
 
                 player1Pad.Position = new Vector2(player1Pad.Position.X, cUPD.SPPositionY);
-                player2Pad.Position = new Vector2(player2Pad.Position.X, cUPD.SPPositionY);
+                player2Pad.Position = new Vector2(player2Pad.Position.X, cUPD.CPPositionY);
                 ball.Position = new Vector2(cUPD.BallPositionX, cUPD.BallPositionY);
             }
 
