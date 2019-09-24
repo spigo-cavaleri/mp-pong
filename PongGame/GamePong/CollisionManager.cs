@@ -95,7 +95,27 @@ namespace PongGame.GamePong
         {
             if (ball.IsColliding(pad))
             {
+
+                float padMidtPunkt = pad.Position.Y + pad.Height / 2;
+                float ballmidpount = ball.Position.Y + ball.Height / 2;
+
+                float DistanceFromMidt = padMidtPunkt- ballmidpount ;
+
+
+                if (ballmidpount > padMidtPunkt)
+                {
+                    ball.Direction.Y += -DistanceFromMidt /130 ;
+                }
+                if (ballmidpount < padMidtPunkt)
+                {
+                    ball.Direction.Y -= DistanceFromMidt/ 130;
+                }
+
+
+
                 ball.Direction.X *= INVERT;
+
+
             }
         }
 
