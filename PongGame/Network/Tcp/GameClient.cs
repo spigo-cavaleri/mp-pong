@@ -53,8 +53,8 @@ namespace PongGame.Network.Tcp
         #endregion
 
         #region PRIVATE FIELDS
-        private ConcurrentQueue<TcpDataPacket> PacketsToSend;
-        private ConcurrentQueue<TcpDataPacket> PacketsToReceive;
+        private ConcurrentQueue<TcpDataPacket> packetsToSend;
+        private ConcurrentQueue<TcpDataPacket> packetsToReceive;
         #endregion
 
         #region CONSTRUCTERS
@@ -64,6 +64,10 @@ namespace PongGame.Network.Tcp
         /// <param name="client">The underlying Tcp Client used for connecting to the host</param>
         public GameClient(TcpClient client)
         {
+            // initialize the queues use form data wrapping
+            packetsToReceive = new ConcurrentQueue<TcpDataPacket>();
+            packetsToSend = new ConcurrentQueue<TcpDataPacket>();
+
             try
             {
                 TcpClient = client;
@@ -119,21 +123,36 @@ namespace PongGame.Network.Tcp
         {
             if (JSONSerializer.SerializeData(dataPacket, out string data))
             {
-                PacketsToSend.Enqueue(new TcpDataPacket(this, data));
+                packetsToSend.Enqueue(new TcpDataPacket(this, data));
             }
         }
 
         /// <summary>
-        /// This is a server function and shouldn't be called anywhere else !!
-        /// Controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
+        /// Gets the next data packet in the data packets to receive queue
         /// </summary>
-        /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        internal void SetDataToSendServer(TcpDataPacket data)
+        /// <typeparam name="T">The type of object to recieve</typeparam>
+        /// <returns>The object of data</returns>
+        public T GetNextDataToReceive<T>()
         {
-            if (PacketsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
+            if (packetsToReceive != null && packetsToReceive.Count > 0)
             {
-                PacketsToSend.Enqueue(data);
+                TcpDataPacket tcpDataPacket;
+
+                while (!packetsToReceive.TryDequeue(out tcpDataPacket))
+                { }
+
+                // Tries to serialize the data packet as T type, if it failes then enqueues the datapacket back into the list
+                if (JSONSerializer.DeSerializeData(tcpDataPacket.Data, out T dataPacket))
+                {
+                    return dataPacket;
+                }
+                else
+                {
+                    packetsToReceive.Enqueue(tcpDataPacket);
+                }
             }
+
+            return default(T);
         }
 
         /// <summary>
@@ -143,8 +162,13 @@ namespace PongGame.Network.Tcp
         /// <returns>The object of data</returns>
         public T GetLatestDataToReceive<T>()
         {
-            // TODO need to catchs the zero packets exception out of bounds
-            return GetDataToReceive<T>()[GetDataToReceive<T>().Length - 1];
+            if (packetsToReceive.Count > 0)
+            {
+                int lastElementNumber = GetAllDataToReceive<T>().Length - 1;
+                return GetAllDataToReceive<T>()[lastElementNumber];
+            }
+
+            return default(T);
         }
 
         /// <summary>
@@ -152,43 +176,18 @@ namespace PongGame.Network.Tcp
         /// </summary>
         /// <typeparam name="T">The type of object expected to receice</typeparam>
         /// <returns>An array of object matching the type param, empty if no data is sendt</returns>
-        public T[] GetDataToReceive<T>()
+        public T[] GetAllDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get
             ConcurrentBag<T> packets = new ConcurrentBag<T>();
 
-            while (PacketsToReceive != null && PacketsToReceive.Count > 0)
+            int currentPacketIndex = packetsToReceive.Count;
+
+            for (int i = currentPacketIndex; i >= 0; i--)
             {
-                if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
-                {
-                    if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
-                    {
-                        packets.Add(dataPacket);
-                    }
-                }
+                packets.Add(GetNextDataToReceive<T>());
             }
-
-            return packets.ToArray();
-        }
-
-        /// <summary>
-        /// This is a server function and shouldn't be called anywhere else !!
-        /// Returns an array of data packets that is received by this client
-        /// </summary>
-        /// <returns>The data packets received from the server, an empty array if no data is to receive</returns>
-        internal TcpDataPacket[] GetDataToReceiveServer()
-        {
-            // Temporary bag for storing all the packets to get
-            ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
-
-            while (PacketsToReceive != null && PacketsToReceive.Count > 0)
-            {
-                if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
-                {
-                    packets.Add(packet);
-                }
-            }
-
+            
             return packets.ToArray();
         }
 
@@ -212,13 +211,48 @@ namespace PongGame.Network.Tcp
         }
         #endregion
 
+        #region INTERNAL FUNCTIONS
+        /// <summary>
+        /// This is a server function and shouldn't be called anywhere else !!
+        /// Returns an array of data packets that is received by this client
+        /// </summary>
+        /// <returns>The data packets received from the server, an empty array if no data is to receive</returns>
+        internal TcpDataPacket[] GetDataToReceiveServer()
+        {
+            // Temporary bag for storing all the packets to get
+            ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
+
+            while (packetsToReceive != null && packetsToReceive.Count > 0)
+            {
+                if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
+                {
+                    packets.Add(packet);
+                }
+            }
+
+            return packets.ToArray();
+        }
+
+        /// <summary>
+        /// This is a server function and shouldn't be called anywhere else !!
+        /// Controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
+        /// </summary>
+        /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
+        internal void SetDataToSendServer(TcpDataPacket data)
+        {
+            if (packetsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
+            {
+                packetsToSend.Enqueue(data);
+            }
+        }
+        #endregion
+
         #region PRIVATE FUNCTIONS
+        /// <summary>
+        /// The client loop that sends and receives data to and from a tcp server
+        /// </summary>
         private void ClientLoop()
         {
-            // initialize the queues use form data wrapping
-            PacketsToReceive = new ConcurrentQueue<TcpDataPacket>();
-            PacketsToSend = new ConcurrentQueue<TcpDataPacket>();
-
             StreamReader reader = new StreamReader(TcpClient.GetStream(), Encoding.ASCII);
             StreamWriter writer = new StreamWriter(TcpClient.GetStream(), Encoding.ASCII);
 
@@ -234,14 +268,14 @@ namespace PongGame.Network.Tcp
 
                         if (!string.IsNullOrEmpty(data))
                         {
-                            PacketsToReceive.Enqueue(new TcpDataPacket(this, data));
+                            packetsToReceive.Enqueue(new TcpDataPacket(this, data));
                         }
                     }
 
                     // Sends all packets to the server
-                    while (PacketsToSend.Count > 0)
+                    while (packetsToSend.Count > 0)
                     {
-                        if (PacketsToSend.TryDequeue(out TcpDataPacket nextPacketToSend))
+                        if (packetsToSend.TryDequeue(out TcpDataPacket nextPacketToSend))
                         {
                             writer.WriteLine(nextPacketToSend.Data);
                             writer.Flush();

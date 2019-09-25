@@ -186,24 +186,64 @@ namespace PongGame.Network.Tcp
         }
 
         /// <summary>
+        /// Gets the next data packet in the data packets to receive queue
+        /// </summary>
+        /// <typeparam name="T">The type of object to recieve</typeparam>
+        /// <returns>The object of data</returns>
+        public T GetNextDataToReceive<T>()
+        {
+            if (packetsToReceive != null && packetsToReceive.Count > 0)
+            {
+                TcpDataPacket tcpDataPacket;
+
+                while (!packetsToReceive.TryDequeue(out tcpDataPacket))
+                { }
+
+                // Tries to serialize the data packet as the T type, if it failes then enqueues the datapacket back into the list
+                if (JSONSerializer.DeSerializeData(tcpDataPacket.Data, out T dataPacket))
+                {
+                    return dataPacket;
+                }
+                else
+                {
+                    packetsToReceive.Enqueue(tcpDataPacket);
+                }
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
+        /// Gets the latest data that the server has received from the clients
+        /// </summary>
+        /// <typeparam name="T">The type of object</typeparam>
+        /// <returns>The object of data</returns>
+        public T GetLatestDataToReceive<T>()
+        {
+            if (packetsToReceive.Count > 0)
+            {
+                int lastElementNumber = GetAllDataToReceive<T>().Length - 1;
+                return GetAllDataToReceive<T>()[lastElementNumber];
+            }
+
+            return default(T);
+        }
+
+        /// <summary>
         /// Gets the data that is received by the server
         /// </summary>
         /// <typeparam name="T">The type of object expected to receive</typeparam>
         /// <returns>Returns an array of Tcp packets if any, otherwise returns empty</returns>
-        public T[] GetDataToReceive<T>()
+        public T[] GetAllDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get
             ConcurrentBag<T> packets = new ConcurrentBag<T>();
 
-            while (packetsToReceive != null && packetsToReceive.Count > 0)
+            int currentPacketIndex = packetsToReceive.Count;
+
+            for (int i = currentPacketIndex; i >= 0; i--)
             {
-                if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
-                {
-                    if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
-                    {
-                        packets.Add(dataPacket);
-                    }
-                }
+                packets.Add(GetNextDataToReceive<T>());
             }
 
             return packets.ToArray();
