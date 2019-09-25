@@ -163,13 +163,10 @@ namespace PongGame.Network.Tcp
         {
             if (gameClients != null)
             {
-                if (JSONSerializer.SerializeData(dataPacket, out string data))
+                // enqueues a Tcp packet for each client in the current client list
+                foreach (GameClient client in gameClients)
                 {
-                    // enqueues a Tcp packet for each client in the current client list
-                    foreach (GameClient client in gameClients)
-                    {
-                        packetsToSend.Enqueue(new TcpDataPacket(client, data));
-                    }
+                    SendToClient(client, dataPacket);
                 }
             }
         }
@@ -198,16 +195,13 @@ namespace PongGame.Network.Tcp
             // Temporary bag for storing all the packets to get
             ConcurrentBag<T> packets = new ConcurrentBag<T>();
 
-            if (packetsToReceive != null)
+            while (packetsToReceive != null && packetsToReceive.Count > 0)
             {
-                while (packetsToReceive.Count > 0)
+                if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
                 {
-                    if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
+                    if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
                     {
-                        if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
-                        {
-                            packets.Add(dataPacket);
-                        }
+                        packets.Add(dataPacket);
                     }
                 }
             }
@@ -308,23 +302,20 @@ namespace PongGame.Network.Tcp
         /// </summary>
         private void Send()
         {
-            for (int i = 0; i < packetsToSend.Count; i++)
+            foreach (GameClient client in gameClients)
             {
-                foreach (GameClient client in gameClients)
+                if (packetsToSend.Count > 0 && packetsToSend.TryPeek(out TcpDataPacket peekPacket))
                 {
-                    if (packetsToSend.TryPeek(out TcpDataPacket peekPacket))
+                    // the next packet to send is on the client list
+                    if (client == peekPacket.Client)
                     {
-                        // the next packet to send is on the client list
-                        if (client == peekPacket.Client)
-                        {
-                            TcpDataPacket packetForFoundClient;
-                            // tries to dequeue the packet from the packet to send queue
-                            while (!packetsToSend.TryDequeue(out packetForFoundClient))
-                            { }
+                        TcpDataPacket packetForFoundClient;
+                        // tries to dequeue the packet from the packet to send queue
+                        while (!packetsToSend.TryDequeue(out packetForFoundClient))
+                        { }
 
-                            // sends the data to the client in the client list 
-                            client.SetDataToSendServer(packetForFoundClient);
-                        }
+                        // sends the data to the client in the client list 
+                        client.SetDataToSendServer(packetForFoundClient);
                     }
                 }
             }

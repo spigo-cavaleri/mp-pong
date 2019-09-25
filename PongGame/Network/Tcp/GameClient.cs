@@ -157,16 +157,13 @@ namespace PongGame.Network.Tcp
             // Temporary bag for storing all the packets to get
             ConcurrentBag<T> packets = new ConcurrentBag<T>();
 
-            if (PacketsToReceive != null && PacketsToReceive.Count > 0)
+            while (PacketsToReceive != null && PacketsToReceive.Count > 0)
             {
-                while (PacketsToReceive.Count > 0)
+                if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
                 {
-                    if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
+                    if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
                     {
-                        if (JSONSerializer.DeSerializeData(packet.Data, out T dataPacket))
-                        {
-                            packets.Add(dataPacket);
-                        }
+                        packets.Add(dataPacket);
                     }
                 }
             }
@@ -184,14 +181,11 @@ namespace PongGame.Network.Tcp
             // Temporary bag for storing all the packets to get
             ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
 
-            if (PacketsToReceive != null && PacketsToReceive.Count > 0)
+            while (PacketsToReceive != null && PacketsToReceive.Count > 0)
             {
-                while (PacketsToReceive.Count > 0)
+                if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
                 {
-                    if (PacketsToReceive.TryDequeue(out TcpDataPacket packet))
-                    {
-                        packets.Add(packet);
-                    }
+                    packets.Add(packet);
                 }
             }
 
