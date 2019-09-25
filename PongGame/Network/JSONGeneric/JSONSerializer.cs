@@ -1,6 +1,9 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using System.Security.Cryptography;
+
+using CryptoLibrary;
 
 namespace PongGame.Network.JSONGeneric
 {
@@ -10,6 +13,9 @@ namespace PongGame.Network.JSONGeneric
     /// </summary>
     public static class JSONSerializer
     {
+        private const string PASSWORD = "password";
+        private const string SALT = "salt";
+
         #region PUBLIC FUNCTIONS
         /// <summary>
         /// Serializes a data packet into a string using encoding ASCII
@@ -49,7 +55,10 @@ namespace PongGame.Network.JSONGeneric
                 // The encoding type used 
                 string encodingType = encoding.EncodingName;
 
-                data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
+                // This should not be hardcoded into the deserializer and serializer 
+                string unEncryptedData = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
+
+                data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(unEncryptedData, PASSWORD, SALT);
             }
 
             if (data != null)
@@ -72,8 +81,11 @@ namespace PongGame.Network.JSONGeneric
         {
             dataPacket = default(T);
 
+            // This should not be hardcoded into the deserializer and serializer 
+            string unDecryptedData = CryptoHelper.Decrypt<TripleDESCryptoServiceProvider>(data, PASSWORD, SALT);
+
             // Splits up the data into sections of a class type to decode, the encoding type and the concret data to deserialize
-            if (SplitData(data, out string type, out Encoding encoding, out string dataPacketToDeSerialize))
+            if (SplitData(unDecryptedData, out string type, out Encoding encoding, out string dataPacketToDeSerialize))
             {
                 // Compares type with the T type object
                 if (type == typeof(T).ToString())

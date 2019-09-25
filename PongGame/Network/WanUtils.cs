@@ -62,7 +62,6 @@ namespace PongGame.Network
         }
         #endregion
 
-
         #region PRIVATE FUCNTIONS
         private static IPAddress GetLocalIpAddress()
         {
