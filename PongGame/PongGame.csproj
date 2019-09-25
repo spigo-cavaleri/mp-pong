@@ -70,7 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CryptoLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\CryptoLib.0.6.0\lib\net40\CryptoLibrary.dll</HintPath>
+      <HintPath>packages\CryptoLib.0.6.0\lib\net40\CryptoLibrary.dll</HintPath>
     </Reference>
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
