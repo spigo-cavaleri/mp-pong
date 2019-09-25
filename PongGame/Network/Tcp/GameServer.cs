@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -99,8 +98,6 @@ namespace PongGame.Network.Tcp
                     Name = "ServerThread",
                     IsBackground = false
                 };
-
-                Console.WriteLine("Server constructed");
 
                 Start(serverThread);
 
@@ -259,6 +256,10 @@ namespace PongGame.Network.Tcp
                 {
                     GameServerException(string.Format("Server Socket exception: {0}", e));
                 }
+            }
+            finally
+            {
+                Stop();
             }
         }
 

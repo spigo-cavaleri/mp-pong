@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace WebServer
 {
     public static class TextDatabaseManager
     {
-        private static string folderPath = @"C:\pong-server";
+        private static string folderPath = AppDomain.CurrentDomain.BaseDirectory;
         private static string userFileName = @"users.txt";
         private static string highscoreFileName = @"highscore.txt";
         
         public static bool UserExistsInTextFile(string line)
         {
-            string fullPath = folderPath + "/" + userFileName;
+            string fullPath = Path.Combine(folderPath, userFileName);
 
             // Create folder if not exists
-            System.IO.Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(folderPath);
 
             if (! File.Exists(fullPath))
             {
@@ -47,13 +45,13 @@ namespace WebServer
 
         public static List<SavedHighscore> FindTopFiveInHighscore()
         {
-            string fullPath = folderPath + "/" + highscoreFileName;
+            string fullPath = Path.Combine(folderPath, highscoreFileName);
             List<SavedHighscore> tempList = new List<SavedHighscore>();
             List<SavedHighscore> returnList = new List<SavedHighscore>();
             int topFive = 5;
 
             // Create folder if not exists
-            System.IO.Directory.CreateDirectory(folderPath);
+            Directory.CreateDirectory(folderPath);
 
             if (!File.Exists(fullPath))
             {
@@ -93,19 +91,19 @@ namespace WebServer
 
         public static bool SaveUserInTextFile(string line)
         {
-            string fullPath = folderPath + "/" + userFileName;
+            string fullPath = Path.Combine(folderPath, userFileName);
 
             return SaveLineInTextFile(line, fullPath);
         }
 
         public static bool SaveHighscoreInTextFile(string line)
         {
-            string fullPath = folderPath + "/" + highscoreFileName;
+            string fullPath = Path.Combine(folderPath, highscoreFileName);
 
             return SaveLineInTextFile(line, fullPath);
         }
 
-        private static bool SaveLineInTextFile(string line,  string fullPath)
+        private static bool SaveLineInTextFile(string line, string fullPath)
         {
             // Create folder if not exists
             Directory.CreateDirectory(folderPath);

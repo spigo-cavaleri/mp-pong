@@ -14,8 +14,8 @@ namespace PongGame.Network.JSONMessages
         /// </summary>
         public string Username
         {
-            get => this.username;
-            set { this.username = value; }
+            get => this.userName;
+            set { this.userName = value; }
 
         }
 
@@ -46,7 +46,7 @@ namespace PongGame.Network.JSONMessages
         #region PUBLIC FUNCTIONS
         public override string ToString()
         {
-            return this.username + ";" + this.password;
+            return this.userName + ";" + this.password;
         }
         #endregion
     }

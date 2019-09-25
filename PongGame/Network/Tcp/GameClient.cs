@@ -128,7 +128,7 @@ namespace PongGame.Network.Tcp
         /// Controls if the client in the data packet matches this client, if it doesn't then the data isn't sendt
         /// </summary>
         /// <param name="data">The data to send, if data is empty or null nothing is sendt</param>
-        public void SetDataToSendServer(TcpDataPacket data)
+        internal void SetDataToSendServer(TcpDataPacket data)
         {
             if (PacketsToSend != null && data.Client == this && !string.IsNullOrEmpty(data.Data))
             {
@@ -137,10 +137,21 @@ namespace PongGame.Network.Tcp
         }
 
         /// <summary>
+        /// Gets the latest data that the client has received from the server
+        /// </summary>
+        /// <typeparam name="T">The type of object</typeparam>
+        /// <returns>The object of data</returns>
+        public T GetLatestDataToReceive<T>()
+        {
+            // TODO need to catchs the zero packets exception out of bounds
+            return GetDataToReceive<T>()[GetDataToReceive<T>().Length - 1];
+        }
+
+        /// <summary>
         /// Receives the object sendt from the server
         /// </summary>
         /// <typeparam name="T">The type of object expected to receice</typeparam>
-        /// <returns>An array of object matching the tyoe param, empty if no data is sendt</returns>
+        /// <returns>An array of object matching the type param, empty if no data is sendt</returns>
         public T[] GetDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get
@@ -164,10 +175,11 @@ namespace PongGame.Network.Tcp
         }
 
         /// <summary>
+        /// This is a server function and shouldn't be called anywhere else !!
         /// Returns an array of data packets that is received by this client
         /// </summary>
         /// <returns>The data packets received from the server, an empty array if no data is to receive</returns>
-        public TcpDataPacket[] GetDataToReceiveServer()
+        internal TcpDataPacket[] GetDataToReceiveServer()
         {
             // Temporary bag for storing all the packets to get
             ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
@@ -209,8 +221,6 @@ namespace PongGame.Network.Tcp
         #region PRIVATE FUNCTIONS
         private void ClientLoop()
         {
-            Console.WriteLine("Client loop");
-
             // initialize the queues use form data wrapping
             PacketsToReceive = new ConcurrentQueue<TcpDataPacket>();
             PacketsToSend = new ConcurrentQueue<TcpDataPacket>();

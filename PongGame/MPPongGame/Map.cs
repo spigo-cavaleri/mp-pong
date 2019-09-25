@@ -91,6 +91,11 @@ namespace PongGame.MPPongGame
         #endregion
 
         #region PRIVATE FIELDS
+        private bool isServer = false;
+
+        private ServerUpdateDataPacket ServerUpdateDataPacket;
+        private ClientUpdateDataPacket clientUpdateDataPacket;
+
         private Texture2D backgroundSprite;
         private Texture2D ballSprite;
         private Texture2D player1PadSprite;
@@ -114,7 +119,6 @@ namespace PongGame.MPPongGame
         private GraphicsDevice graphics;
 
         private GameClient gameClient;
-        private bool isServer = false;
         #endregion
 
         #region CONSTRUCTERS
