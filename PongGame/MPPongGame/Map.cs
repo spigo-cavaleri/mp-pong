@@ -283,7 +283,7 @@ namespace PongGame.MPPongGame
         private void HandleServerUpdate(GameTime gameTime)
         {
             // Receive
-            ServerUpdateDataPacket[] serverUpdateDPs = GameServer.Instance.GetDataToReceive<ServerUpdateDataPacket>();
+            ServerUpdateDataPacket[] serverUpdateDPs = GameServer.Instance.GetAllDataToReceive<ServerUpdateDataPacket>();
             for (int i = 0; i < serverUpdateDPs.Length; i++)
             {
                 MPKeyPress intent = serverUpdateDPs[i].MPKeyPress;
@@ -315,7 +315,7 @@ namespace PongGame.MPPongGame
         private void HandleClientUpdate(GameTime gameTime)
         {
             // Receive
-            ClientUpdateDataPacket[] cUpdateDPs = gameClient.GetDataToReceive<ClientUpdateDataPacket>();
+            ClientUpdateDataPacket[] cUpdateDPs = gameClient.GetAllDataToReceive<ClientUpdateDataPacket>();
 
             //for (int i = 0; i < data.Length; i++)
             //{
