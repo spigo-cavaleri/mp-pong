@@ -16,6 +16,13 @@ namespace PongGame.Network.JSONGeneric
         private const string PASSWORD = "password";
         private const string SALT = "salt";
 
+        private static MemoryStream memoryStream;
+        private static StreamReader streamReader;
+        private static StringBuilder stringBuilder;
+        private static EncodingInfo lastEncodingUsed;
+        private static DataContractJsonSerializer serializer;
+        private static DataContractJsonSerializer deSerializer;
+
         #region PUBLIC FUNCTIONS
         /// <summary>
         /// Serializes a data packet into a string using encoding ASCII
@@ -40,27 +47,26 @@ namespace PongGame.Network.JSONGeneric
         {
             data = null;
 
-            MemoryStream memoryStream = new MemoryStream();
-            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+            serializer = new DataContractJsonSerializer(typeof(T));
 
+            memoryStream = new MemoryStream();
             serializer.WriteObject(memoryStream, dataPacketToSerialize);
 
             // Repositions the reading starting point of the memory stream to the begining
             memoryStream.Position = 0;
-            using (StreamReader streamReader = new StreamReader(memoryStream, encoding))
-            {
-                // formats the data to inculde the type of object it's serialized
-                string classType = dataPacketToSerialize.GetType().ToString();
+            streamReader = new StreamReader(memoryStream, encoding);
 
-                // The encoding type used 
-                string encodingType = encoding.EncodingName;
+            // formats the data to inculde the type of object it's serialized
+            string classType = dataPacketToSerialize.GetType().ToString();
 
-                
-                data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
-                
-                // Password and salt should not be hardcoded into the deserializer and serializer 
-                //data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(encryptedData, PASSWORD, SALT);
-            }
+            // The encoding type used 
+            string encodingType = encoding.EncodingName;
+
+            data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
+
+            // Password and salt should not be hardcoded into the deserializer and serializer 
+            //data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(encryptedData, PASSWORD, SALT);
+
 
             if (data != null)
             {
@@ -91,8 +97,8 @@ namespace PongGame.Network.JSONGeneric
                 // Compares type with the T type object
                 if (type == typeof(T).ToString())
                 {
-                    MemoryStream memoryStream = new MemoryStream(encoding.GetBytes(dataPacketToDeSerialize));
-                    DataContractJsonSerializer deSerializer = new DataContractJsonSerializer(typeof(T));
+                    memoryStream = new MemoryStream(encoding.GetBytes(dataPacketToDeSerialize));
+                    deSerializer = new DataContractJsonSerializer(typeof(T));
 
                     dataPacket = (T)deSerializer.ReadObject(memoryStream);
 
@@ -130,19 +136,19 @@ namespace PongGame.Network.JSONGeneric
                     encoding = enco;
                 }
 
-                StringBuilder sb = new StringBuilder();
+                stringBuilder = new StringBuilder();
 
                 for (int i = 2; i < splitData.Length; i++)
                 {
-                    sb.Append(splitData[i]);
+                    stringBuilder.Append(splitData[i]);
 
                     if (i < splitData.Length - 1)
                     {
-                        sb.Append(":");
+                        stringBuilder.Append(":");
                     }
                 }
 
-                dataPacketToDeSerialize = sb.ToString();
+                dataPacketToDeSerialize = stringBuilder.ToString();
 
                 return true;
             }
@@ -160,17 +166,26 @@ namespace PongGame.Network.JSONGeneric
         {
             encoding = null;
 
-            EncodingInfo[] encodingInfo = Encoding.GetEncodings();
-
-            for (int i = 0; i < encodingInfo.Length; i++)
+            if (lastEncodingUsed != null && lastEncodingUsed.DisplayName == encodingName)
             {
-                if (encodingInfo[i].DisplayName == encodingName)
+                encoding = Encoding.GetEncoding(lastEncodingUsed.Name);
+                return true;
+            }
+            else
+            {
+                EncodingInfo[] encodingInfo = Encoding.GetEncodings();
+
+                for (int i = 0; i < encodingInfo.Length; i++)
                 {
-                    encoding = Encoding.GetEncoding(encodingInfo[i].Name);
-                    return true;
+                    if (encodingInfo[i].DisplayName == encodingName)
+                    {
+                        encoding = Encoding.GetEncoding(encodingInfo[i].Name);
+                        lastEncodingUsed = encodingInfo[i];
+                        return true;
+                    }
                 }
             }
-
+            
             return false;
         }
         #endregion
