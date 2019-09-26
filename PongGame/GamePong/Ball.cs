@@ -1,8 +1,17 @@
-﻿using System;
-
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using PongGame.GamePong;
+using PongGame.Tcp;
+using PongGame.Data;
+
+
+using System.Threading;
+using System;
 namespace PongGame.GamePong
 {
     /// <summary>
@@ -21,6 +30,9 @@ namespace PongGame.GamePong
     public class Ball : GameObject
     {
         #region PUBLIC FIELDS
+
+
+        public static Vector2 BallPositioN = Vector2.Zero;
         /// <summary>
         /// Initial speed of the ball
         /// </summary>
@@ -124,15 +136,26 @@ namespace PongGame.GamePong
         /// <param name="gameTime">The game time</param>
         public override void Update(GameTime gameTime)
         {
-            Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
-            Game1.GameData.BallXPosition = (int)Position.X;
-            speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (SPEED_COOLDOWN < speedIncreaseCounter)
+            if (Game1.ImClient == true && Game1.GameStart == true)
             {
-                speed *= SPEED_INCREASE_RATE;
-                speedIncreaseCounter = 0;
+                Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
+                Game1.GameData.BallXPosition = (int)Position.X;
+                speedIncreaseCounter += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (SPEED_COOLDOWN < speedIncreaseCounter)
+                {
+                    speed *= SPEED_INCREASE_RATE;
+                    speedIncreaseCounter = 0;
+                }
+
+                BallPositioN = Position;
             }
+            if (Game1.ImClient == false)
+            {
+                Position.X = GameSeverTest.ballP.X;
+                Position.Y = GameSeverTest.ballP.Y;
+            }
+        
         }
         #endregion
 
@@ -140,8 +163,9 @@ namespace PongGame.GamePong
         private void Translate(float deltaTime)
         {
             Direction.Normalize();
-
-            Position += Direction * speed * deltaTime;
+       
+                Position += Direction * speed * deltaTime;
+            
         }
         #endregion
     }

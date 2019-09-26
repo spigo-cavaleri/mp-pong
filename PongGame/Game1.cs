@@ -2,10 +2,16 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
 using PongGame.GamePong;
 using PongGame.Tcp;
 using PongGame.Data;
+
+
+using System.Threading;
+using System;
 
 namespace PongGame
 {
@@ -56,12 +62,21 @@ namespace PongGame
             }
         }
 
+
+        public static bool severStarted = true;
+        public static bool ImClient = true;
+        public static bool GameStart;
+
         private GameState gameState;
         private Map pongMap;
         private SpriteFont font;
         public static GameData GameData;
-        private GameClientTest clientTest = new GameClientTest();
+        public static GameClientTest clientTest = new GameClientTest();
+        public static GameSeverTest GameSeverTest = new GameSeverTest();
         private TcpDataPacket TcpData = new TcpDataPacket();
+
+       Thread ClientThread = new Thread(new ThreadStart(startClient));
+        Thread SeverThread = new Thread(new ThreadStart(StartSever));
 
 
         public Game1()
@@ -75,10 +90,25 @@ namespace PongGame
             Content.RootDirectory = "Content";
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-
+                
             GameState = GameState.Playing;
         }
 
+        public static string DeBugString2 = "Hej Hej";
+        public static  void startClient()
+        {
+
+
+            clientTest.Connect("127.0.0.1");
+
+        }
+        public static void   StartSever()
+        {
+            if (ImClient == false)
+            {
+                GameSeverTest.StartSever();
+            }
+        }
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -89,6 +119,9 @@ namespace PongGame
         {
             // TODO: Add your initialization logic here
             pongMap = Map.Instance;
+
+            ClientThread.Start();
+        
             GameData = new GameData();
             base.Initialize();
         }
@@ -105,7 +138,7 @@ namespace PongGame
             LobbyScreen.Instance.LoadContent();
 
             font = Content.Load<SpriteFont>("Font");
-            clientTest.Connect("127.0.0.1", "lluliululalala");
+          //  clientTest.Connect("127.0.0.1", "lluliululalala");
         }
 
         /// <summary>
@@ -127,10 +160,14 @@ namespace PongGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            if (severStarted == false)
+            {
+                SeverThread.Start();
+                severStarted = true;
+            }
 
-           
 
-            
+
             switch (GameState)
             {
                 case GameState.LoginScreen:
@@ -162,7 +199,8 @@ namespace PongGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(font, $"Player 1 Name        {GameData.BallXPosition}             player 2 Name", new Vector2(GraphicsDevice.Viewport.Width/2-100, 20), Color.Red);
+            SpriteBatch.DrawString(font, $"Player 1 Name         {GameClientTest.DeBugString}  " +
+                $"  {GameSeverTest.TestDebugSever} {GameSeverTest.DatagrotingfromClietn}        player 2 Name", new Vector2(100, 20), Color.Red);
 
 
             switch (GameState)

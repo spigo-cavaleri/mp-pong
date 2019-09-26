@@ -5,63 +5,97 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.Net.Sockets;
-
+using System.Threading;
+using PongGame.GamePong;
+using PongGame.Tcp;
+using PongGame.Data;
 namespace PongGame.Tcp
 {
-  public  class GameClientTest
+  public class GameClientTest
     {
+
 
      public static string DeBugString;
 
+        TcpDataPacket TcpDataPacket;
 
-      public bool Connect(string sever, string message)
+        string message;
+        enum dataTosend
         {
+            ballx,
+            bally
+        }
 
-            bool won = false;
-            try
+        dataTosend dataType = new dataTosend();
+        
+      public void Connect(string sever)
+        {
+            dataType = dataTosend.bally;
+            while (Game1.ImClient ==true)
             {
-                Int32 port = 13000;
+               
+                DeBugString = "ClietnRuning";
+                Thread.Sleep(8);
 
-                TcpClient client = new TcpClient(sever, port);/// sætter op tclpvlient med port nummer og id nummer
-                DeBugString ="write waht you wanne send\n";
-                message = Console.ReadLine();
-
-                Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);// laver massage om til byte
-                NetworkStream stream = client.GetStream();// sætter op stream
-                stream.Write(data, 0, data.Length);// skriver data til sever
-               DeBugString=  "send data {0}"+  message;
-                data = new byte[256];// byte array
-                string responsedata = string.Empty;// string for repondataet
-                string moreresponsedata = null;
-
-                int bytes = stream.Read(data, 0, data.Length);
-
-                responsedata = System.Text.Encoding.ASCII.GetString(data, 0, bytes);// laver repsonse dat
-
-               DeBugString = "resicved data {0}," + responsedata;
-
-                if (responsedata == "gg")
+                try
                 {
-                    DeBugString = "you won!!!!!!!!!!!";
+                    Int32 port = 13000;
 
-                    Console.ReadLine();
-                    won = true;
+                    TcpClient client = new TcpClient("127.0.0.1", port);/// sætter op tclpvlient med port nummer og id nummer
+                    DeBugString = "write waht you wanne send\n";
+
+                    switch (dataType)
+                    {
+                        //case dataTosend.ballx:
+                        //     message = Convert.ToString((int)Ball.BallPositioN.X);
+                        //    dataType = dataTosend.bally;
+                        //    break;
+                        case dataTosend.bally:
+                            
+                          //  dataType =dataTosend.ballx;
+
+                            break;                       
+                    }
+                    message = Convert.ToString((int)Ball.BallPositioN.Y);
+
+
+
+
+                    Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);// laver massage om til byte
+                    NetworkStream stream = client.GetStream();// sætter op stream
+                    stream.Write(data, 0, data.Length);// skriver data til sever
+                    DeBugString = "send data {0}" + message;
+                    data = new byte[256];// byte array
+                    string responsedata = string.Empty;// string for repondataet
+                    string moreresponsedata = null;
+                      
+
+
+
+                    int bytes = stream.Read(data, 0, data.Length);
+
+                    responsedata = System.Text.Encoding.ASCII.GetString(data, 0, bytes);// laver repsonse dat
+
+                    DeBugString = "resicved data {0}," + responsedata;
+                    Game1.GameStart = true;
+                    stream.Close();
+                    client.Close();
                 }
-                stream.Close();
-                client.Close();
+                catch (ArgumentNullException e)
+                {
+                    DeBugString = "argumentNUlleecpetion: {0}";
+                }
+                catch (SocketException e)
+                {
+                    Game1.ImClient = false;
+                    
+                    DeBugString = "socketecpetion";
+                }
 
             }
-            catch (ArgumentNullException e)
-            {
-                //Console.WriteLine("argumentNUlleecpetion: {0}", e);
-            }
-            catch (SocketException e)
-            {
-             //   Console.WriteLine("socketecpetion");
-
-            }
-
-            return won;
+            Game1.severStarted = false;
+            
+            DeBugString = "client Not Runnong";
         }
 
     }

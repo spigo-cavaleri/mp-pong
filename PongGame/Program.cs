@@ -15,7 +15,7 @@ namespace PongGame
         static void Main()
         {
             using (var game = Game1.Instance)
-                game.Run();
+              game.Run();
         }
     }
 #endif

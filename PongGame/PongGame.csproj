@@ -65,6 +65,7 @@
     <Compile Include="Tcp\GameClient.cs" />
     <Compile Include="Tcp\GameClientTest.cs" />
     <Compile Include="Tcp\GameServer.cs" />
+    <Compile Include="Tcp\GameSeverTest.cs" />
     <Compile Include="Tcp\WanUtils.cs" />
     <Compile Include="Tcp\Data\TcpDataPacket.cs" />
   </ItemGroup>
