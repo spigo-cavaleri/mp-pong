@@ -221,7 +221,7 @@ namespace PongGame.Network.Tcp
             // Temporary bag for storing all the packets to get
             ConcurrentBag<TcpDataPacket> packets = new ConcurrentBag<TcpDataPacket>();
 
-            while (packetsToReceive != null && packetsToReceive.Count > 0)
+            while (!packetsToReceive.IsEmpty)
             {
                 if (packetsToReceive.TryDequeue(out TcpDataPacket packet))
                 {
@@ -272,7 +272,7 @@ namespace PongGame.Network.Tcp
                     }
 
                     // Sends all packets to the server
-                    while (packetsToSend.Count > 0)
+                    while (!packetsToSend.IsEmpty)
                     {
                         if (packetsToSend.TryDequeue(out TcpDataPacket nextPacketToSend))
                         {

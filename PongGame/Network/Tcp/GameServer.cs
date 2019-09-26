@@ -325,7 +325,7 @@ namespace PongGame.Network.Tcp
             {
                 // temp array of the packets to receive from the current client
                 TcpDataPacket[] packets = client.GetDataToReceiveServer();
-                if (packets != null)
+                if (packets.Length > 0)
                 {
                     for (int i = 0; i < packets.Length; i++)
                     {
@@ -343,7 +343,7 @@ namespace PongGame.Network.Tcp
         {
             foreach (GameClient client in gameClients)
             {
-                if (packetsToSend.Count > 0 && packetsToSend.TryPeek(out TcpDataPacket peekPacket))
+                if (!packetsToSend.IsEmpty && packetsToSend.TryPeek(out TcpDataPacket peekPacket))
                 {
                     // the next packet to send is on the client list
                     if (client == peekPacket.Client)
