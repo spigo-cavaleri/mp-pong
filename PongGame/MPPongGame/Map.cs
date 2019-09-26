@@ -142,10 +142,10 @@ namespace PongGame.MPPongGame
         /// </summary>
         public void LoadContent()
         {
-            ballSprite = content.Load<Texture2D>("pokeBall");
-            player1PadSprite = content.Load<Texture2D>("pipe");
-            player2PadSprite = content.Load<Texture2D>("pipe");
-
+            ballSprite = content.Load<Texture2D>("ball2");
+            player1PadSprite = content.Load<Texture2D>("player1");
+            player2PadSprite = content.Load<Texture2D>("player2");
+            backgroundSprite = content.Load<Texture2D>("bg");
             gameFont = content.Load<SpriteFont>("InputFont");
 
             collisionManager = CollisionManager.Instance;

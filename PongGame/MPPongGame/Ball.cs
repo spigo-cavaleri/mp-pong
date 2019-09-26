@@ -20,6 +20,14 @@ namespace PongGame.MPPongGame
     /// </summary>
     public class Ball : GameObject
     {
+        public override Rectangle HitBox
+        {
+            get
+            {
+                return new Rectangle((int)Position.X +5, (int)Position.Y+5, Width-5, Height-5);
+            }
+        }
+
         public int PointCounter
         {
             get => (int)Math.Floor(this.pointCounter);
