@@ -2,3 +2,4 @@ yes:1700
 yes:2200
 niki:700
 niki:100
+yes:400
