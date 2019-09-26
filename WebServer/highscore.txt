@@ -6,3 +6,4 @@ yes:400
 yes:1550
 yes:600
 ASYGEH12:1150
+niki:1000

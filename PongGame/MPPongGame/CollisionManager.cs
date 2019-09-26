@@ -101,8 +101,8 @@ namespace PongGame.MPPongGame
             {
 
 
-                float padMidtPunkt = pad.Position.Y + pad.Height / 2;
-                float ballmidpount = ball.Position.Y + ball.Height / 2;
+                float padMidtPunkt = pad.HitBox.Y + pad.Height / 2;
+                float ballmidpount = ball.HitBox.Y + ball.Height / 2;
 
                 float DistanceFromMidt = padMidtPunkt - ballmidpount;
 

@@ -20,7 +20,7 @@ namespace PongGame.MPPongGame
         {
             get
             {
-                return new Rectangle((int)Position.X + 16, (int)Position.Y + 20, Width - 16, Height - 20);
+                return new Rectangle((int)Position.X + 16, (int)Position.Y + 20, Width - 32, Height - 40);
             }
         }
 

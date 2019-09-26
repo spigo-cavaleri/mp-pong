@@ -24,7 +24,7 @@ namespace PongGame.MPPongGame
         {
             get
             {
-                return new Rectangle((int)Position.X +5, (int)Position.Y+5, Width-5, Height-5);
+                return new Rectangle((int)Position.X +5, (int)Position.Y+5, Width-10, Height-10);
             }
         }
 
