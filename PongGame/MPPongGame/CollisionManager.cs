@@ -119,13 +119,13 @@ namespace PongGame.MPPongGame
                 ball.Direction.X *= INVERT;
 
                 // Wonky collision fix
-                if (ball.Position.X > pad.Position.X)
+                if (ball.HitBox.X > pad.HitBox.X)
                 {
-                    ball.Position.X += ball.Position.X - pad.Position.X;
+                    ball.Position.X += ball.HitBox.X - pad.HitBox.X;
                 }
                 else
                 {
-                    ball.Position.X += ball.Position.X - (pad.Position.X - pad.HitBox.Width);
+                    ball.Position.X += ball.HitBox.X - (pad.HitBox.X - pad.HitBox.Width);
                 }
                 ball.PointUpdater();
             }
