@@ -125,7 +125,7 @@ namespace PongGame.MPPongGame
                 }
                 else
                 {
-                    ball.Position.X += ball.Position.X - (pad.Position.X - pad.Sprite.Width);
+                    ball.Position.X += ball.Position.X - (pad.Position.X - pad.HitBox.Width);
                 }
                 ball.PointUpdater();
             }
