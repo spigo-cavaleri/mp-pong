@@ -5,6 +5,14 @@ namespace PongGame.MPPongGame
 {
     public class Wall : GameObject
     {
+        public override Rectangle HitBox
+        {
+            get
+            {
+                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
+            }
+        }
+
         #region PUBLIC PROPERTIES
         public string Name
         {
