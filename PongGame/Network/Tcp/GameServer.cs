@@ -86,6 +86,8 @@ namespace PongGame.Network.Tcp
 
                 TcpListener = new TcpListener(ip, port);
 
+                TcpListener.Server.NoDelay = true;
+
                 LocalEndPoint = new IPEndPoint(ip, port);
 
                 gameClients = new ConcurrentBag<GameClient>();

@@ -72,6 +72,8 @@ namespace PongGame.Network.Tcp
             {
                 TcpClient = client;
 
+                TcpClient.Client.NoDelay = true;
+
                 IPEndPoint endpoint = TcpClient.Client.LocalEndPoint as IPEndPoint;
                 Name = string.Format("{0}:{1}", endpoint.Address, endpoint.Port);
 
