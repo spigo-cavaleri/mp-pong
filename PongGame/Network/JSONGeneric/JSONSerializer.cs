@@ -56,10 +56,10 @@ namespace PongGame.Network.JSONGeneric
                 string encodingType = encoding.EncodingName;
 
                 
-                string encryptedData = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
+                string data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
                 
                 // Password and salt should not be hardcoded into the deserializer and serializer 
-                data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(encryptedData, PASSWORD, SALT);
+                //data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(encryptedData, PASSWORD, SALT);
             }
 
             if (data != null)
@@ -83,10 +83,10 @@ namespace PongGame.Network.JSONGeneric
             dataPacket = default(T);
 
             // Password and salt should not be hardcoded into the deserializer and serializer
-            string decryptedData = CryptoHelper.Decrypt<TripleDESCryptoServiceProvider>(data, PASSWORD, SALT);
+            //string decryptedData = CryptoHelper.Decrypt<TripleDESCryptoServiceProvider>(data, PASSWORD, SALT);
 
             // Splits up the data into sections of a class type to decode, the encoding type and the concret data to deserialize
-            if (SplitData(decryptedData, out string type, out Encoding encoding, out string dataPacketToDeSerialize))
+            if (SplitData(data, out string type, out Encoding encoding, out string dataPacketToDeSerialize))
             {
                 // Compares type with the T type object
                 if (type == typeof(T).ToString())
