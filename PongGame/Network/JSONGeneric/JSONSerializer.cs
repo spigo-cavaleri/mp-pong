@@ -56,7 +56,7 @@ namespace PongGame.Network.JSONGeneric
                 string encodingType = encoding.EncodingName;
 
                 
-                string data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
+                data = string.Format("{0}:{1}:{2}", classType, encodingType, streamReader.ReadToEnd());
                 
                 // Password and salt should not be hardcoded into the deserializer and serializer 
                 //data = CryptoHelper.Encrypt<TripleDESCryptoServiceProvider>(encryptedData, PASSWORD, SALT);
