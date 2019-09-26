@@ -283,7 +283,7 @@ namespace PongGame.MPPongGame
         private void HandleServerUpdate(GameTime gameTime)
         {
             // Receive
-            ServerUpdateDataPacket serverUpdateDPs = GameServer.Instance.GetNextDataToReceive<ServerUpdateDataPacket>();
+            ServerUpdateDataPacket serverUpdateDPs = GameServer.Instance.GetLatestDataToReceive<ServerUpdateDataPacket>();
 
             if (serverUpdateDPs.MPKeyPress != MPKeyPress.None)
             {
@@ -314,7 +314,7 @@ namespace PongGame.MPPongGame
         private void HandleClientUpdate(GameTime gameTime)
         {
             // Receive
-            ClientUpdateDataPacket cUpdateDPs = gameClient.GetNextDataToReceive<ClientUpdateDataPacket>();
+            ClientUpdateDataPacket cUpdateDPs = gameClient.GetLatestDataToReceive<ClientUpdateDataPacket>();
 
             //for (int i = 0; i < data.Length; i++)
             //{
