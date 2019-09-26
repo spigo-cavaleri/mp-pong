@@ -192,7 +192,8 @@ namespace PongGame.Network.Tcp
         /// <returns>The object of data</returns>
         public T GetNextDataToReceive<T>()
         {
-            if (!packetsToReceive.IsEmpty && packetsToReceive.TryDequeue(out TcpDataPacket tcpDataPacket))
+            // !packetsToReceive.IsEmpty && 
+            if (packetsToReceive.TryDequeue(out TcpDataPacket tcpDataPacket))
             {
                 // Tries to serialize the data packet as T type, if it failes then enqueues the datapacket back into the list
                 if (JSONSerializer.DeSerializeData(tcpDataPacket.Data, out T dataPacket))
