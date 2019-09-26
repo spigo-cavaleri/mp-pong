@@ -94,12 +94,12 @@ namespace PongGame.MPPongGame
         {
             if (this.controllable)
             {
-                if (Keyboard.GetState().IsKeyDown(Keys.Up) && Position.Y > 0)
+                if (Keyboard.GetState().IsKeyDown(Keys.Up) && HitBox.Y > 0)
                 {
                     Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
 
-                if (Keyboard.GetState().IsKeyDown(Keys.Down) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - HitBox.Height)
+                if (Keyboard.GetState().IsKeyDown(Keys.Down) && HitBox.Y < Game1.Instance.GraphicsDevice.Viewport.Height - HitBox.Height)
                 {
                     Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                 }
@@ -131,7 +131,7 @@ namespace PongGame.MPPongGame
 
                 case MPKeyPress.Up:
 
-                    if (Position.Y > 0)
+                    if (HitBox.Y > 0)
                     {
                         Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                     }
@@ -139,7 +139,7 @@ namespace PongGame.MPPongGame
 
                 case MPKeyPress.Down:
 
-                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height - HitBox.Height)
+                    if (HitBox.Y < Game1.Instance.GraphicsDevice.Viewport.Height - HitBox.Height)
                     {
                         Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
                     }
