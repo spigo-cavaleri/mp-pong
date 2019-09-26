@@ -177,12 +177,22 @@ namespace PongGame.Network.Tcp
         /// <param name="data"></param>
         public void SendToClient<T>(GameClient client, T dataPacket)
         {
-            if (client != null && JSONSerializer.SerializeData(dataPacket, out string data))
+            Thread sendThread = new Thread(() =>
             {
-                TcpDataPacket packet = new TcpDataPacket(client, data);
-                // Enqueue the data to send to client in the servers tcp packet queue
-                packetsToSend.Enqueue(packet);
-            }
+                T dataToSendPacket;
+
+                lock (dataPacket)
+                {
+                    dataToSendPacket = dataPacket;
+                }
+
+                if (client != null && JSONSerializer.SerializeData(dataToSendPacket, out string data))
+                {
+                    TcpDataPacket packet = new TcpDataPacket(client, data);
+                    // Enqueue the data to send to client in the servers tcp packet queue
+                    packetsToSend.Enqueue(packet);
+                }
+            });
         }
 
         /// <summary>

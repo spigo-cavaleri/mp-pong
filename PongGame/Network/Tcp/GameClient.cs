@@ -121,10 +121,20 @@ namespace PongGame.Network.Tcp
         /// <param name="dataPacket">The object to serialize and send to the server</param>
         public void SetDataToSend<T>(T dataPacket)
         {
-            if (JSONSerializer.SerializeData(dataPacket, out string data))
+            Thread sendThread = new Thread(() =>
             {
-                packetsToSend.Enqueue(new TcpDataPacket(this, data));
-            }
+                T dataToSendPacket;
+
+                lock (dataPacket)
+                {
+                    dataToSendPacket = dataPacket;
+                }
+                
+                if (JSONSerializer.SerializeData(dataToSendPacket, out string data))
+                {
+                    packetsToSend.Enqueue(new TcpDataPacket(this, data));
+                }
+            });            
         }
 
         /// <summary>
