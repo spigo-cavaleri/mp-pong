@@ -162,13 +162,15 @@ namespace PongGame.Network.Tcp
         /// <returns>The object of data</returns>
         public T GetLatestDataToReceive<T>()
         {
-            if (packetsToReceive.Count > 0)
+            T[] tmpArray = GetAllDataToReceive<T>();
+
+            if (tmpArray.Length > 0)
             {
-                int lastElementNumber = GetAllDataToReceive<T>().Length - 1;
-                return GetAllDataToReceive<T>()[lastElementNumber];
+                int lastElementNumber = tmpArray.Length - 1;
+                return tmpArray[lastElementNumber];
             }
 
-            return default(T);
+            return default(T); 
         }
 
         /// <summary>

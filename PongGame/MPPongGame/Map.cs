@@ -315,21 +315,19 @@ namespace PongGame.MPPongGame
         private void HandleClientUpdate(GameTime gameTime)
         {
             // Receive
-            ClientUpdateDataPacket[] cUpdateDPs = gameClient.GetAllDataToReceive<ClientUpdateDataPacket>();
+            ClientUpdateDataPacket cUpdateDPs = gameClient.GetLatestDataToReceive<ClientUpdateDataPacket>();
 
             //for (int i = 0; i < data.Length; i++)
             //{
             // Tager kun sidste modtagne pakke :)
-            if (cUpdateDPs.Length > 0)
+            if (!cUpdateDPs.Equals(new ClientUpdateDataPacket()))
             {
-                ClientUpdateDataPacket cUPD = cUpdateDPs[cUpdateDPs.Length - 1];
+                player1Pad.Position = new Vector2(player1Pad.Position.X, cUpdateDPs.SPPositionY);
+                player2Pad.Position = new Vector2(player2Pad.Position.X, cUpdateDPs.CPPositionY);
+                ball.Position = new Vector2(cUpdateDPs.BallPositionX, cUpdateDPs.BallPositionY);
 
-                player1Pad.Position = new Vector2(player1Pad.Position.X, cUPD.SPPositionY);
-                player2Pad.Position = new Vector2(player2Pad.Position.X, cUPD.CPPositionY);
-                ball.Position = new Vector2(cUPD.BallPositionX, cUPD.BallPositionY);
-
-                player1Pad.ClientUpdateStatsFromServer(cUPD.SPoints, cUPD.SHealth);
-                player2Pad.ClientUpdateStatsFromServer(cUPD.CPoints, cUPD.CHealth);
+                player1Pad.ClientUpdateStatsFromServer(cUpdateDPs.SPoints, cUpdateDPs.SHealth);
+                player2Pad.ClientUpdateStatsFromServer(cUpdateDPs.CPoints, cUpdateDPs.CHealth);
 
                 if(player1Pad.HealthPoints <= 0)
                 {

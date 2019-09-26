@@ -15,7 +15,7 @@ namespace PongGame.Network
         /// <summary>
         ///  The call URL for the REST server
         /// </summary>
-        private static string baseUrl = "http://10.131.69.183:49823/";
+        private static string baseUrl = "http://10.131.67.161:49823/";
 
         /// <summary>
         /// Create a new user

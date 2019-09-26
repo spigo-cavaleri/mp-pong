@@ -66,6 +66,23 @@ namespace PongGame.Network.Tcp.Data
             this.CPoints = CPoints;
             this.CHealth = CHealth;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj.GetType() != this.GetType()) return false;
+
+            ClientUpdateDataPacket other = (ClientUpdateDataPacket)obj;
+
+            return other.SPPositionY == this.SPPositionY &&
+                   other.CPPositionY == this.CPPositionY &&
+                   other.BallPositionX == this.BallPositionX &&
+                   other.BallPositionX == this.BallPositionY &&
+                   other.SPoints == this.SPoints &&
+                   other.SHealth == this.SHealth &&
+                   other.CPoints == this.CPoints &&
+                   other.CHealth == this.CHealth;
+        }
         #endregion
     }
 }
