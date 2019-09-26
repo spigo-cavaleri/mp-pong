@@ -283,11 +283,14 @@ namespace PongGame.MPPongGame
         private void HandleServerUpdate(GameTime gameTime)
         {
             // Receive
-            ServerUpdateDataPacket serverUpdateDPs = GameServer.Instance.GetLatestDataToReceive<ServerUpdateDataPacket>();
+            ServerUpdateDataPacket[] serverUpdateDPs = GameServer.Instance.GetAllDataToReceive<ServerUpdateDataPacket>();
 
-            if (serverUpdateDPs.MPKeyPress != MPKeyPress.None)
+            for (int i = 0; i < serverUpdateDPs.Length; i++)
             {
-                Player2Pad.HandleClientIntent(gameTime, serverUpdateDPs.MPKeyPress);
+                if (serverUpdateDPs[i].MPKeyPress != MPKeyPress.None)
+                {
+                    Player2Pad.HandleClientIntent(gameTime, serverUpdateDPs[i].MPKeyPress);
+                }
             }
 
             // Game Logic
@@ -328,19 +331,23 @@ namespace PongGame.MPPongGame
                 player1Pad.ClientUpdateStatsFromServer(cUpdateDPs.SPoints, cUpdateDPs.SHealth);
                 player2Pad.ClientUpdateStatsFromServer(cUpdateDPs.CPoints, cUpdateDPs.CHealth);
 
-                if(player1Pad.HealthPoints <= 0)
+                if (player1Pad.HealthPoints <= 0 && !this.GameOver)
                 {
                     // Other player (the server player) lost! I won yay
                     RequestHTTP.SendHighscore(MyUsername, player2Pad.CurrentPoints);
+                    this.GameOver = true;
                 }
             }
 
             // Game Logic
             MPKeyPress intent = player2Pad.ClientIntent();
 
-            // Send
-            ServerUpdateDataPacket sUDP = new ServerUpdateDataPacket(intent);
-            gameClient.SetDataToSend(sUDP);
+            if (intent != MPKeyPress.None)
+            {
+                // Send
+                ServerUpdateDataPacket sUDP = new ServerUpdateDataPacket(intent);
+                gameClient.SetDataToSend(sUDP);
+            }
         }
         #endregion
     }
