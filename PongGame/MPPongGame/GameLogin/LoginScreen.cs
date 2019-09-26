@@ -1,12 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Security.Cryptography;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
+using CryptoLibrary;
 
 using PongGame.Network;
 using PongGame.Network.JSONMessages;
 using PongGame.MPPongGame.GameLobby;
-using System.Security.Cryptography;
-using CryptoLibrary;
 
 namespace PongGame.MPPongGame.GameLogin
 {
