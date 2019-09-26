@@ -283,12 +283,11 @@ namespace PongGame.MPPongGame
         private void HandleServerUpdate(GameTime gameTime)
         {
             // Receive
-            ServerUpdateDataPacket[] serverUpdateDPs = GameServer.Instance.GetAllDataToReceive<ServerUpdateDataPacket>();
-            for (int i = 0; i < serverUpdateDPs.Length; i++)
-            {
-                MPKeyPress intent = serverUpdateDPs[i].MPKeyPress;
+            ServerUpdateDataPacket serverUpdateDPs = GameServer.Instance.GetLatestDataToReceive<ServerUpdateDataPacket>();
 
-                player2Pad.HandleClientIntent(gameTime, intent);
+            if (serverUpdateDPs.MPKeyPress != MPKeyPress.None)
+            {
+                Player2Pad.HandleClientIntent(gameTime, serverUpdateDPs.MPKeyPress);
             }
 
             // Game Logic

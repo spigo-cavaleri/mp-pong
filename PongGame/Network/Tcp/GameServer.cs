@@ -206,6 +206,7 @@ namespace PongGame.Network.Tcp
                 }
                 else
                 {
+                    // if deserializer failes puts the tcp data packet back into the queue, this should be reworked in a later update
                     packetsToReceive.Enqueue(tcpDataPacket);
                 }
             }
@@ -217,13 +218,15 @@ namespace PongGame.Network.Tcp
         /// Gets the latest data that the server has received from the clients
         /// </summary>
         /// <typeparam name="T">The type of object</typeparam>
-        /// <returns>The object of data</returns>
+        /// <returns>The object of data, returns default T if none found</returns>
         public T GetLatestDataToReceive<T>()
         {
-            if (packetsToReceive.Count > 0)
+            T[] tmpArray = GetAllDataToReceive<T>();
+
+            if (tmpArray.Length > 0)
             {
-                int lastElementNumber = GetAllDataToReceive<T>().Length - 1;
-                return GetAllDataToReceive<T>()[lastElementNumber];
+                int lastElementNumber = tmpArray.Length - 1;
+                return tmpArray[lastElementNumber];
             }
 
             return default(T);
@@ -233,7 +236,7 @@ namespace PongGame.Network.Tcp
         /// Gets the data that is received by the server
         /// </summary>
         /// <typeparam name="T">The type of object expected to receive</typeparam>
-        /// <returns>Returns an array of Tcp packets if any, otherwise returns empty</returns>
+        /// <returns>Returns an array of Tcp packets if any, otherwise returns an empty array</returns>
         public T[] GetAllDataToReceive<T>()
         {
             // Temporary bag for storing all the packets to get

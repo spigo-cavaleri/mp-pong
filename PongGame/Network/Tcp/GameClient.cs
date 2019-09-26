@@ -148,6 +148,7 @@ namespace PongGame.Network.Tcp
                 }
                 else
                 {
+                    // if deserializer failes puts the tcp data packet back into the queue, this should be reworked in a later update
                     packetsToReceive.Enqueue(tcpDataPacket);
                 }
             }
