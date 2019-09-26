@@ -130,7 +130,7 @@ namespace PongGame.Network.Tcp
 
             Thread sendThread = new Thread(() =>
             {
-                if (JSONSerializer.SerializeData(dataPacket, out string data))
+                if (JSONSerializer.SerializeData(dataToSendPacket, out string data))
                 {
                     packetsToSend.Enqueue(new TcpDataPacket(this, data));
                 }
