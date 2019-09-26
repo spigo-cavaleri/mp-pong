@@ -102,7 +102,7 @@ namespace PongGame
         /// </summary>
         protected override void UnloadContent()
         {
-
+            Network.Tcp.GameServer.Instance.Stop();
         }
 
         /// <summary>
