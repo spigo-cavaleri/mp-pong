@@ -12,6 +12,9 @@ namespace PongGame.MPPongGame
 {
     public class Map
     {
+
+        private int counter = 0;
+
         #region CONST VALUES
         /// <summary>
         /// The pad off set
@@ -95,7 +98,6 @@ namespace PongGame.MPPongGame
 
         private ClientUpdateDataPacket clientUpdateDataPacket;
         private ServerUpdateDataPacket serverUpdateDataPacket;
-        private List<ClientUpdateDataPacket> clientUpdateDataPackets = new List<ClientUpdateDataPacket>();
         private List<ServerUpdateDataPacket> serverUpdateDataPackets = new List<ServerUpdateDataPacket>();
 
 
@@ -185,6 +187,8 @@ namespace PongGame.MPPongGame
             {
                 GameObjects[i].Draw(spriteBatch);
             }
+
+            spriteBatch.DrawString(gameFont, $"Counter: {counter}", new Vector2(20, 20), Color.White);
         }
 
         public void SetupAsServer()
@@ -317,32 +321,28 @@ namespace PongGame.MPPongGame
             GameServer.Instance.BroadCast(clientUpdateDataPacket);
 
             serverUpdateDataPackets.Clear();
+
+            counter++;
         }
 
         private void HandleClientUpdate(GameTime gameTime)
         {
-            // Receive
-            clientUpdateDataPackets.AddRange(gameClient.GetAllDataToReceive<ClientUpdateDataPacket>());
+            clientUpdateDataPacket = gameClient.GetLatestDataToReceive<ClientUpdateDataPacket>();
 
-            for (int i = 0; i < clientUpdateDataPackets.Count; i++)
+            if (!clientUpdateDataPacket.Equals(new ClientUpdateDataPacket()))
             {
-                ClientUpdateDataPacket update = clientUpdateDataPackets[i];
+                player1Pad.Position = new Vector2(player1Pad.Position.X, clientUpdateDataPacket.SPPositionY);
+                player2Pad.Position = new Vector2(player2Pad.Position.X, clientUpdateDataPacket.CPPositionY);
+                ball.Position = new Vector2(clientUpdateDataPacket.BallPositionX, clientUpdateDataPacket.BallPositionY);
 
-                if (!update.Equals(new ClientUpdateDataPacket()))
+                player1Pad.ClientUpdateStatsFromServer(clientUpdateDataPacket.SPoints, clientUpdateDataPacket.SHealth);
+                player2Pad.ClientUpdateStatsFromServer(clientUpdateDataPacket.CPoints, clientUpdateDataPacket.CHealth);
+
+                if (player1Pad.HealthPoints <= 0 && !this.GameOver)
                 {
-                    player1Pad.Position = new Vector2(player1Pad.Position.X, update.SPPositionY);
-                    player2Pad.Position = new Vector2(player2Pad.Position.X, update.CPPositionY);
-                    ball.Position = new Vector2(update.BallPositionX, update.BallPositionY);
-
-                    player1Pad.ClientUpdateStatsFromServer(update.SPoints, update.SHealth);
-                    player2Pad.ClientUpdateStatsFromServer(update.CPoints, update.CHealth);
-
-                    if (player1Pad.HealthPoints <= 0 && !this.GameOver)
-                    {
-                        // Other player (the server player) lost! I won yay
-                        RequestHTTP.SendHighscore(MyUsername, player2Pad.CurrentPoints);
-                        this.GameOver = true;
-                    }
+                    // Other player (the server player) lost! I won yay
+                    RequestHTTP.SendHighscore(MyUsername, player2Pad.CurrentPoints);
+                    this.GameOver = true;
                 }
             }
 
@@ -356,7 +356,7 @@ namespace PongGame.MPPongGame
                 gameClient.SetDataToSend(serverUpdateDataPacket);
             }
 
-
+            counter++;
         }
         #endregion
     }
