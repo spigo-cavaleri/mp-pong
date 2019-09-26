@@ -16,6 +16,14 @@ namespace PongGame.MPPongGame
 
     public class Pad : GameObject
     {
+        public override Rectangle HitBox
+        {
+            get
+            {
+                return new Rectangle((int)Position.X + 16, (int)Position.Y, Width - 16, Height);
+            }
+        }
+
         #region PUBLIC PROPERTIES
 
         public int HealthPoints
