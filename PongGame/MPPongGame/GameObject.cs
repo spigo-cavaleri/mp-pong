@@ -37,12 +37,9 @@ namespace PongGame.MPPongGame
         /// <summary>
         /// Hitbox for collision
         /// </summary>
-        public virtual Rectangle HitBox
+        public abstract Rectangle HitBox
         {
-            get
-            {
-                return new Rectangle((int)Position.X, (int)Position.Y, Width, Height);
-            }
+            get;
         }
         #endregion
 
