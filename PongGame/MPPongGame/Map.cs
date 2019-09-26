@@ -93,8 +93,10 @@ namespace PongGame.MPPongGame
         #region PRIVATE FIELDS
         private bool isServer = false;
 
-        private ServerUpdateDataPacket ServerUpdateDataPacket;
+        private ServerUpdateDataPacket serverUpdateDataPacket;
         private ClientUpdateDataPacket clientUpdateDataPacket;
+        private List<ServerUpdateDataPacket> serverUpdateDataPackets = new List<ServerUpdateDataPacket>();
+
 
         private Texture2D backgroundSprite;
         private Texture2D ballSprite;
@@ -283,13 +285,13 @@ namespace PongGame.MPPongGame
         private void HandleServerUpdate(GameTime gameTime)
         {
             // Receive
-            ServerUpdateDataPacket[] serverUpdateDPs = GameServer.Instance.GetAllDataToReceive<ServerUpdateDataPacket>();
+            serverUpdateDataPackets.AddRange(GameServer.Instance.GetAllDataToReceive<ServerUpdateDataPacket>());
 
-            for (int i = 0; i < serverUpdateDPs.Length; i++)
+            for (int i = 0; i < serverUpdateDataPackets.Count; i++)
             {
-                if (serverUpdateDPs[i].MPKeyPress != MPKeyPress.None)
+                if (serverUpdateDataPackets[i].MPKeyPress != MPKeyPress.None)
                 {
-                    Player2Pad.HandleClientIntent(gameTime, serverUpdateDPs[i].MPKeyPress);
+                    Player2Pad.HandleClientIntent(gameTime, serverUpdateDataPackets[i].MPKeyPress);
                 }
             }
 
@@ -310,26 +312,28 @@ namespace PongGame.MPPongGame
             int ballX = (int)Math.Round(ball.Position.X);
             int ballY = (int)Math.Round(ball.Position.Y);
 
-            ClientUpdateDataPacket clientUpdateDP = new ClientUpdateDataPacket(playerMeY, playerOtherY, ballX, ballY, Player1Pad.CurrentPoints, Player1Pad.HealthPoints, Player2Pad.CurrentPoints, Player2Pad.HealthPoints);
-            GameServer.Instance.BroadCast(clientUpdateDP);
+            clientUpdateDataPacket = new ClientUpdateDataPacket(playerMeY, playerOtherY, ballX, ballY, Player1Pad.CurrentPoints, Player1Pad.HealthPoints, Player2Pad.CurrentPoints, Player2Pad.HealthPoints);
+            GameServer.Instance.BroadCast(clientUpdateDataPacket);
+
+            serverUpdateDataPackets.Clear();
         }
 
         private void HandleClientUpdate(GameTime gameTime)
         {
             // Receive
-            ClientUpdateDataPacket cUpdateDPs = gameClient.GetLatestDataToReceive<ClientUpdateDataPacket>();
+            ClientUpdateDataPacket clientUpdateDataPacket = gameClient.GetLatestDataToReceive<ClientUpdateDataPacket>();
 
             //for (int i = 0; i < data.Length; i++)
             //{
             // Tager kun sidste modtagne pakke :)
-            if (!cUpdateDPs.Equals(new ClientUpdateDataPacket()))
+            if (!clientUpdateDataPacket.Equals(new ClientUpdateDataPacket()))
             {
-                player1Pad.Position = new Vector2(player1Pad.Position.X, cUpdateDPs.SPPositionY);
-                player2Pad.Position = new Vector2(player2Pad.Position.X, cUpdateDPs.CPPositionY);
-                ball.Position = new Vector2(cUpdateDPs.BallPositionX, cUpdateDPs.BallPositionY);
+                player1Pad.Position = new Vector2(player1Pad.Position.X, clientUpdateDataPacket.SPPositionY);
+                player2Pad.Position = new Vector2(player2Pad.Position.X, clientUpdateDataPacket.CPPositionY);
+                ball.Position = new Vector2(clientUpdateDataPacket.BallPositionX, clientUpdateDataPacket.BallPositionY);
 
-                player1Pad.ClientUpdateStatsFromServer(cUpdateDPs.SPoints, cUpdateDPs.SHealth);
-                player2Pad.ClientUpdateStatsFromServer(cUpdateDPs.CPoints, cUpdateDPs.CHealth);
+                player1Pad.ClientUpdateStatsFromServer(clientUpdateDataPacket.SPoints, clientUpdateDataPacket.SHealth);
+                player2Pad.ClientUpdateStatsFromServer(clientUpdateDataPacket.CPoints, clientUpdateDataPacket.CHealth);
 
                 if (player1Pad.HealthPoints <= 0 && !this.GameOver)
                 {
@@ -345,8 +349,8 @@ namespace PongGame.MPPongGame
             if (intent != MPKeyPress.None)
             {
                 // Send
-                ServerUpdateDataPacket sUDP = new ServerUpdateDataPacket(intent);
-                gameClient.SetDataToSend(sUDP);
+                serverUpdateDataPacket = new ServerUpdateDataPacket(intent);
+                gameClient.SetDataToSend(serverUpdateDataPacket);
             }
         }
         #endregion
