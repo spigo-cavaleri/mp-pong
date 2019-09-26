@@ -15,11 +15,14 @@ namespace PongGame.Network.JSONGeneric
     {
         private const string PASSWORD = "password";
         private const string SALT = "salt";
-
-        private static MemoryStream memoryStream;
+        
         private static StreamReader streamReader;
         private static StringBuilder stringBuilder;
         private static EncodingInfo lastEncodingUsed;
+
+        private static MemoryStream memoryStreamSerializer;
+        private static MemoryStream memoryStreamDeserializer;
+
         private static DataContractJsonSerializer serializer;
         private static DataContractJsonSerializer deSerializer;
 
@@ -49,12 +52,12 @@ namespace PongGame.Network.JSONGeneric
 
             serializer = new DataContractJsonSerializer(typeof(T));
 
-            memoryStream = new MemoryStream();
-            serializer.WriteObject(memoryStream, dataPacketToSerialize);
+            memoryStreamSerializer = new MemoryStream();
+            serializer.WriteObject(memoryStreamSerializer, dataPacketToSerialize);
 
             // Repositions the reading starting point of the memory stream to the begining
-            memoryStream.Position = 0;
-            streamReader = new StreamReader(memoryStream, encoding);
+            memoryStreamSerializer.Position = 0;
+            streamReader = new StreamReader(memoryStreamSerializer, encoding);
 
             // formats the data to inculde the type of object it's serialized
             string classType = dataPacketToSerialize.GetType().ToString();
@@ -97,10 +100,10 @@ namespace PongGame.Network.JSONGeneric
                 // Compares type with the T type object
                 if (type == typeof(T).ToString())
                 {
-                    memoryStream = new MemoryStream(encoding.GetBytes(dataPacketToDeSerialize));
+                    memoryStreamDeserializer = new MemoryStream(encoding.GetBytes(dataPacketToDeSerialize));
                     deSerializer = new DataContractJsonSerializer(typeof(T));
 
-                    dataPacket = (T)deSerializer.ReadObject(memoryStream);
+                    dataPacket = (T)deSerializer.ReadObject(memoryStreamDeserializer);
 
                     return true;
                 }
