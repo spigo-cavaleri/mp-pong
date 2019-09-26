@@ -14,6 +14,7 @@ namespace PongGame.GamePong
         Down = 2
     }
 
+
     public class Pad : GameObject
     {
         #region PUBLIC PROPERTIES
@@ -52,6 +53,12 @@ namespace PongGame.GamePong
         public string Name;
         #endregion
 
+
+
+
+        public static Vector2 pad1Position;
+        public static Vector2 pad2Positiom;
+
         #region CONSTRUCTERS
         /// <summary>
         /// Construct a pad
@@ -64,6 +71,15 @@ namespace PongGame.GamePong
             Name = name;
             Sprite = sprite;
             Position = position;
+            if (Name == "Player1")
+            {
+                pad1Position = Position;
+            }
+
+            if (Name == "Player2")
+            {
+                pad2Positiom = Position;
+            }
         }
         #endregion
 
@@ -74,7 +90,28 @@ namespace PongGame.GamePong
         /// <param name="gameTime">the game time</param>
         public override void Update(GameTime gameTime)
         {
-            if (IsServer)
+            if (Name == "Player1" && Game1.ImSever == true)
+            {
+                pad1Position.Y = Position.Y;
+            }
+
+            if (Name == "Player2" && Game1.ImClient == false)// player et spiller
+            {
+                Position.Y = pad2Positiom.Y;
+            }
+            if (Name == "Player2" && Game1.ImClient == true)// player 2 spiller
+            {
+                pad2Positiom.Y = Position.Y;
+            }
+
+            if (Name == "Player1" && Game1.ImClient == true&& Game1.GameStart == true )// player 2 spiller
+            {
+                Position.Y = pad1Position.Y;
+            }
+
+
+
+            if (Game1.severStarted == true && Name == "Player1" && Game1.ImClient == false)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.Up) && Position.Y > 0)
                 {
@@ -88,36 +125,59 @@ namespace PongGame.GamePong
             }
             else
             {
-                Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
+                // Position = pad2Position;
             }
+
+
+            if (Name == "Player2" && Game1.ImClient == true)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W) && Position.Y > 0)
+                {
+                    Position.Y -= (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
+                }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.S) && Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+                {
+                    Position.Y += (float)(Speed * gameTime.ElapsedGameTime.TotalSeconds);
+                }
+            }
+            //if (Name == "Player1")
+            //{
+            //    // Position = pad1Position;
+            //}
+            //else
+            //{
+            //    Translate((float)gameTime.ElapsedGameTime.TotalSeconds);
+            //}
         }
         #endregion
 
         #region PRIVATE FUNCTIONS
-        private void Translate(float deltaTime)
-        {
-            switch (keyPress)
-            {
-                case MPKeyPress.None:
-                    break;
+        //private void Translate(float deltaTime)
+        //{
+        //    switch (keyPress)
+        //    {
+        //        case MPKeyPress.None:
+        //            break;
 
-                case MPKeyPress.Up:
+        //        case MPKeyPress.Up:
 
-                    if (Position.Y > 0)
-                    {
-                        Position.Y -= (float)(Speed * deltaTime);
-                    }
-                    break;
+        //            if (Position.Y > 0)
+        //            {
+        //                Position.Y -= (float)(Speed * deltaTime);
+        //            }
+        //            break;
 
-                case MPKeyPress.Down:
+        //        case MPKeyPress.Down:
 
-                    if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
-                    {
-                        Position.Y += (float)(Speed * deltaTime);
-                    }
-                    break;
-            }
-        }
+        //            if (Position.Y < Game1.Instance.GraphicsDevice.Viewport.Height)
+        //            {
+        //                Position.Y += (float)(Speed * deltaTime);
+        //            }
+        //            break;
+        //    }
+        //}
         #endregion
     }
-}
+  }
+

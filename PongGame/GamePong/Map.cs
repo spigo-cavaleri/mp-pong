@@ -112,6 +112,7 @@ namespace PongGame.GamePong
 
             PlayerOneName = "Niki";
             PlayerTwoName = "NotNiki";
+        
         }
 
         /// <summary>
@@ -195,12 +196,12 @@ namespace PongGame.GamePong
             int p1Width = PadOffSetFromEgde;
             int p1Heigth = (graphics.Viewport.Height / 2) - (player1PadSprite.Height / 2);
             Vector2 startPositionPlayerOne = new Vector2(p1Width, p1Heigth);
-            player1Pad = new Pad(player1PadSprite, startPositionPlayerOne, PlayerOneName);
+            player1Pad = new Pad(player1PadSprite, startPositionPlayerOne, "Player1");
 
             int p2Width = graphics.Viewport.Width - player2PadSprite.Width - PadOffSetFromEgde;
             int p2Height = (graphics.Viewport.Height / 2) - (player1PadSprite.Height / 2);
             Vector2 startPositionPlayerTwo = new Vector2(p2Width, p2Height);
-            player2Pad = new Pad(player2PadSprite, startPositionPlayerTwo, PlayerTwoName);
+            player2Pad = new Pad(player2PadSprite, startPositionPlayerTwo, "Player2");
 
             GameObjects.Add(player1Pad);
             GameObjects.Add(player2Pad);

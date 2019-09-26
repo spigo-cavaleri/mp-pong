@@ -152,10 +152,11 @@ namespace PongGame.GamePong
             }
             if (Game1.ImClient == false)
             {
-                Position.X = GameSeverTest.ballP.X;
-                Position.Y = GameSeverTest.ballP.Y;
+               Position.X = GameSeverTest.ballP.X;
+               Position.Y = GameSeverTest.ballP.Y;
             }
-        
+          //  Position.Y = GameSeverTest.ballP.Y;
+
         }
         #endregion
 

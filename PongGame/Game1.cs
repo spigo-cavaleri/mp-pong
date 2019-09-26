@@ -65,6 +65,8 @@ namespace PongGame
 
         public static bool severStarted = true;
         public static bool ImClient = true;
+        public static bool ImSever = false;
+       
         public static bool GameStart;
 
         private GameState gameState;
@@ -75,7 +77,7 @@ namespace PongGame
         public static GameSeverTest GameSeverTest = new GameSeverTest();
         private TcpDataPacket TcpData = new TcpDataPacket();
 
-       Thread ClientThread = new Thread(new ThreadStart(startClient));
+        Thread ClientThread = new Thread(new ThreadStart(startClient));
         Thread SeverThread = new Thread(new ThreadStart(StartSever));
 
 
@@ -163,6 +165,7 @@ namespace PongGame
             if (severStarted == false)
             {
                 SeverThread.Start();
+                ImSever = true;
                 severStarted = true;
             }
 
@@ -199,7 +202,7 @@ namespace PongGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             SpriteBatch.Begin();
-            SpriteBatch.DrawString(font, $"Player 1 Name         {GameClientTest.DeBugString}  " +
+            SpriteBatch.DrawString(font, $"Player 1 Name {GameClientTest.ClientRecvieData}   DEBUgString     {GameClientTest.DeBugString}  " +
                 $"  {GameSeverTest.TestDebugSever} {GameSeverTest.DatagrotingfromClietn}        player 2 Name", new Vector2(100, 20), Color.Red);
 
 

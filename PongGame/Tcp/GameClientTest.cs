@@ -16,6 +16,7 @@ namespace PongGame.Tcp
 
 
      public static string DeBugString;
+        public static string ClientRecvieData;
 
         TcpDataPacket TcpDataPacket;
 
@@ -23,19 +24,29 @@ namespace PongGame.Tcp
         enum dataTosend
         {
             ballx,
-            bally
+            bally,
+            padx,
+            pady
         }
 
         dataTosend dataType = new dataTosend();
         
+        enum DataRecived
+        {
+          PadX,
+          pady
+        }
+
+        DataRecived recived;
       public void Connect(string sever)
         {
-            dataType = dataTosend.bally;
+            dataType = dataTosend.ballx;
+            recived = DataRecived.PadX;
             while (Game1.ImClient ==true)
             {
                
                 DeBugString = "ClietnRuning";
-                Thread.Sleep(8);
+                Thread.Sleep(1);
 
                 try
                 {
@@ -46,17 +57,20 @@ namespace PongGame.Tcp
 
                     switch (dataType)
                     {
-                        //case dataTosend.ballx:
-                        //     message = Convert.ToString((int)Ball.BallPositioN.X);
-                        //    dataType = dataTosend.bally;
-                        //    break;
+                        case dataTosend.ballx:
+                            message = Convert.ToString((int)Ball.BallPositioN.X);
+                            dataType = dataTosend.bally;
+                            break;
                         case dataTosend.bally:
-                            
-                          //  dataType =dataTosend.ballx;
-
-                            break;                       
+                            message = Convert.ToString((int)Ball.BallPositioN.Y);
+                            dataType = dataTosend.pady;
+                            break;
+                        case dataTosend.pady:
+                            message = Convert.ToString((int)Pad.pad2Positiom.Y);
+                            dataType = dataTosend.ballx;          
+                            break;
                     }
-                    message = Convert.ToString((int)Ball.BallPositioN.Y);
+                    // message = Convert.ToString((int)Ball.BallPositioN.Y);
 
 
 
@@ -64,20 +78,20 @@ namespace PongGame.Tcp
                     Byte[] data = System.Text.Encoding.ASCII.GetBytes(message);// laver massage om til byte
                     NetworkStream stream = client.GetStream();// sætter op stream
                     stream.Write(data, 0, data.Length);// skriver data til sever
+
+
                     DeBugString = "send data {0}" + message;
                     data = new byte[256];// byte array
-                    string responsedata = string.Empty;// string for repondataet
-                    string moreresponsedata = null;
-                      
+                    string responsedata = string.Empty;// string for repondataet                               
 
-
-
-                    int bytes = stream.Read(data, 0, data.Length);
+                    int bytes = stream.Read(data, 0, data.Length); // reads data to byte
 
                     responsedata = System.Text.Encoding.ASCII.GetString(data, 0, bytes);// laver repsonse dat
 
-                    DeBugString = "resicved data {0}," + responsedata;
-                    Game1.GameStart = true;
+                    Pad.pad1Position.Y = Convert.ToInt32(responsedata);
+                    
+                   ClientRecvieData = "resicved data: " + responsedata;
+                   
                     stream.Close();
                     client.Close();
                 }
@@ -91,10 +105,11 @@ namespace PongGame.Tcp
                     
                     DeBugString = "socketecpetion";
                 }
-
+                Game1.GameStart = true;
             }
             Game1.severStarted = false;
-            
+       
+
             DeBugString = "client Not Runnong";
         }
 
