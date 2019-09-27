@@ -6,13 +6,22 @@ using System.Web;
 
 namespace WebServer
 {
-    [DataContract]
-    public class SavedHighscore
+    /// <summary>
+    /// Struct used to for JSON messages regarding sending highscores to API
+    /// </summary>
+    [DataContract] public struct SavedHighscore
     {
+        /// <summary>
+        /// The winning user
+        /// </summary>
         public string Username
         {
             get => this.username;
         }
+
+        /// <summary>
+        /// The winning users score
+        /// </summary>
         public int Score
         {
             get => this.score;

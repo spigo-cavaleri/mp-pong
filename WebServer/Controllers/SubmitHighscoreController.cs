@@ -9,19 +9,29 @@ namespace WebServer.Controllers
 {
     public class SubmitHighscoreController : ApiController
     {
-        // GET: api/SubmitHighscore
+        /// <summary>
+        /// GET: api/SubmitHighscore
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> Get()
         {
             return new string[] { "Ingen GET requests er mulige" };
         }
 
-        // GET: api/SubmitHighscore/5
+        /// <summary>
+        /// GET: api/SubmitHighscore/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Get(int id)
         {
             return "Ingen GET requests er mulige";
         }
 
-        // POST: api/SubmitHighscore
+        /// <summary>
+        /// POST: api/SubmitHighscore
+        /// </summary>
+        /// <returns></returns>
         public ServerConfirmation Post()
         {
             string value = Request.Content.ReadAsStringAsync().Result;

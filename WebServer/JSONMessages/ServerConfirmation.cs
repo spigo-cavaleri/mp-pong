@@ -7,8 +7,10 @@ using System.Runtime.Serialization;
 
 namespace WebServer
 {
-    [DataContract]
-    public class ServerConfirmation
+    /// <summary>
+    /// Struct used for JSON messages to confirm whether an action was succesful
+    /// </summary>
+    [DataContract] public class ServerConfirmation
     {
         [DataMember] bool serverSuccess;
 

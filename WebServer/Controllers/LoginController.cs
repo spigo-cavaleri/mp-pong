@@ -10,19 +10,29 @@ namespace WebServer.Controllers
 {
     public class LoginController : ApiController
     {
-        // GET: api/Login
+        /// <summary>
+        /// GET: api/Login
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> Get()
         {
             return new string[] { "Ingen GET requests er mulige" };
         }
 
-        // GET: api/Login/5
+        /// <summary>
+        /// GET: api/Login/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Get(int id)
         {
             return "Ingen GET requests er mulige";
         }
 
-        // POST: api/Login
+        /// <summary>
+        /// POST: api/Login
+        /// </summary>
+        /// <returns></returns>
         public LoginResponseMessage Post()
         {
             string value = Request.Content.ReadAsStringAsync().Result;

@@ -6,14 +6,22 @@ using System.Web;
 
 namespace WebServer
 {
-    [DataContract]
-    public class CreateServerInformationMessage
+    /// <summary>
+    /// Class used for JSON requests regarding hosting a game server
+    /// </summary>
+    [DataContract] public class CreateServerInformationMessage
     {
+        /// <summary>
+        /// The IP other players should connect to
+        /// </summary>
         public string GameServerIP
         {
             get => this.gameServerIP;
         }
 
+        /// <summary>
+        /// The port other players should connect through
+        /// </summary>
         public string GameServerPort
         {
             get => this.gameServerPort;

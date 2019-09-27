@@ -9,19 +9,29 @@ namespace WebServer.Controllers
 {
     public class CreateUserController : ApiController
     {
-        // GET: api/CreateUser
+        /// <summary>
+        /// GET: api/CreateUser
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> Get()
         {
             return new string[] { "Ingen GET requests er mulige" };
         }
 
-        // GET: api/CreateUser/5
+        /// <summary>
+        /// GET: api/CreateUser/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Get(int id)
         {
             return "Ingen GET requests er mulige";
         }
 
-        // POST: api/CreateUser
+        /// <summary>
+        /// POST: api/CreateUser
+        /// </summary>
+        /// <returns></returns>
         public LoginResponseMessage Post()
         {
             string value = Request.Content.ReadAsStringAsync().Result;
@@ -32,6 +42,7 @@ namespace WebServer.Controllers
             {
                 // Håndter at der ikke sendes noget :)
                 // return "WHAT?!?!?!";
+                return null;
             }
 
             try

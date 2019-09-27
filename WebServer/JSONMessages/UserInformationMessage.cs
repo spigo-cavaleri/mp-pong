@@ -7,6 +7,9 @@ using System.Runtime.Serialization;
 
 namespace WebServer
 {
+    /// <summary>
+    /// Struct used for JSON messages regarding login / account creation
+    /// </summary>
     [DataContract] public struct UserInformationMessage
     {
         public string Username

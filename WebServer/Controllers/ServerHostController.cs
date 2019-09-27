@@ -9,19 +9,29 @@ namespace WebServer.Controllers
 {
     public class ServerHostController : ApiController
     {
-        // GET: api/ServerHost
+        /// <summary>
+        /// GET: api/ServerHost
+        /// </summary>
+        /// <returns></returns>
         public IEnumerable<string> Get()
         {
             return new string[] { "Ingen GET requests er mulige" };
         }
 
-        // GET: api/ServerHost/5
+        /// <summary>
+        /// GET: api/ServerHost/5
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public string Get(int id)
         {
             return "Ingen GET requests er mulige";
         }
 
-        // POST: api/ServerHost
+        /// <summary>
+        /// POST: api/ServerHost
+        /// </summary>
+        /// <returns></returns>
         public ServerConfirmation Post()
         {
             string value = Request.Content.ReadAsStringAsync().Result;

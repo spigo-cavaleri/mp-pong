@@ -4,12 +4,20 @@ using System.IO;
 
 namespace WebServer
 {
+    /// <summary>
+    /// Makeshift plaintext .txt formatted database handler
+    /// </summary>
     public static class TextDatabaseManager
     {
         private static string folderPath = AppDomain.CurrentDomain.BaseDirectory;
         private static string userFileName = @"users.txt";
         private static string highscoreFileName = @"highscore.txt";
         
+        /// <summary>
+        /// Checks for existing users in database file
+        /// </summary>
+        /// <param name="line">The formatted user;password to search for</param>
+        /// <returns>Whether the user is found or not</returns>
         public static bool UserExistsInTextFile(string line)
         {
             string fullPath = Path.Combine(folderPath, userFileName);
@@ -43,6 +51,10 @@ namespace WebServer
             return false;
         }
 
+        /// <summary>
+        /// Find top 5 highscores in descending order of scores
+        /// </summary>
+        /// <returns>Top 5 SavedHighscore objects</returns>
         public static List<SavedHighscore> FindTopFiveInHighscore()
         {
             string fullPath = Path.Combine(folderPath, highscoreFileName);
@@ -89,6 +101,11 @@ namespace WebServer
             return returnList;
         }
 
+        /// <summary>
+        /// Saves a new user in the database
+        /// </summary>
+        /// <param name="line">The formatted user;password to save</param>
+        /// <returns>Whether the user was saved or not</returns>
         public static bool SaveUserInTextFile(string line)
         {
             string fullPath = Path.Combine(folderPath, userFileName);
@@ -96,6 +113,11 @@ namespace WebServer
             return SaveLineInTextFile(line, fullPath);
         }
 
+        /// <summary>
+        /// Saves a new highscore in the database
+        /// </summary>
+        /// <param name="line">The formatted user;score to save</param>
+        /// <returns>Whether the highscore was saved or not</returns>
         public static bool SaveHighscoreInTextFile(string line)
         {
             string fullPath = Path.Combine(folderPath, highscoreFileName);
