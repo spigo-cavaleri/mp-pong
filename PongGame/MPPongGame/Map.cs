@@ -188,7 +188,7 @@ namespace PongGame.MPPongGame
                 GameObjects[i].Draw(spriteBatch);
             }
 
-            spriteBatch.DrawString(gameFont, $"Counter: {counter}", new Vector2(20, 20), Color.White);
+            //spriteBatch.DrawString(gameFont, $"Counter: {counter}", new Vector2(20, 20), Color.White);
         }
 
         public void SetupAsServer()
